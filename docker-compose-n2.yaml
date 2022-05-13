@@ -17,6 +17,11 @@ version: '3.6'
 volumes:
   pbft-shared:
 
+networks:
+  default:
+    external:
+      name: 'siot_blockchain'
+
 services:
 
 # -------------=== rest api ===-------------
