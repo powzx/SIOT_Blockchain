@@ -17,11 +17,6 @@ version: '3.6'
 volumes:
   pbft-shared:
 
-networks:
-  default:
-    external:
-      name: 'siot_blockchain'
-
 services:
 
 # -------------=== rest api ===-------------
@@ -91,6 +86,20 @@ services:
       "
     stop_signal: SIGKILL
 
+# -------------=== shell ===-------------
+
+  shell:
+    image: hyperledger/sawtooth-shell:nightly
+    container_name: sawtooth-shell-default
+    volumes:
+      - pbft-shared:/pbft-shared
+    command: |
+      bash -c "
+        sawtooth keygen
+        tail -f /dev/null
+      "
+    stop_signal: SIGKILL
+
 # -------------=== validators ===-------------
 
   validator-20:
@@ -99,7 +108,9 @@ services:
     expose:
       - 4004
       - 5050
-      - 8800
+      - 8820
+    ports:
+      - "8820:8820"
     volumes:
       - pbft-shared:/pbft-shared
     command: |
@@ -116,33 +127,33 @@ services:
         fi &&
         sawtooth keygen my_key &&
         sawtooth-validator -vv \
-          --endpoint tcp://validator-20:8800 \
+          --endpoint tcp://${GUEST}:8820 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
-          --bind network:tcp://eth0:8800 \
+          --bind network:tcp://eth0:8820 \
           --scheduler parallel \
           --peering static \
           --maximum-peer-connectivity 10000 \
-          --peers tcp://validator-0:8800 \
-          --peers tcp://validator-1:8800 \
-          --peers tcp://validator-2:8800 \
-          --peers tcp://validator-3:8800 \
-          --peers tcp://validator-4:8800 \
-          --peers tcp://validator-5:8800 \
-          --peers tcp://validator-6:8800 \
-          --peers tcp://validator-7:8800 \
-          --peers tcp://validator-8:8800 \
-          --peers tcp://validator-9:8800 \
-          --peers tcp://validator-10:8800 \
-          --peers tcp://validator-11:8800 \
-          --peers tcp://validator-12:8800 \
-          --peers tcp://validator-13:8800 \
-          --peers tcp://validator-14:8800 \
-          --peers tcp://validator-15:8800 \
-          --peers tcp://validator-16:8800 \
-          --peers tcp://validator-17:8800 \
-          --peers tcp://validator-18:8800 \
-          --peers tcp://validator-19:8800
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816 \
+          --peers tcp://${HOST}:8817 \
+          --peers tcp://${HOST}:8818 \
+          --peers tcp://${HOST}:8819
       "
   validator-21:
     image: hyperledger/sawtooth-validator:nightly
@@ -150,7 +161,9 @@ services:
     expose:
       - 4004
       - 5050
-      - 8800
+      - 8821
+    ports:
+      - "8821:8821"
     volumes:
       - pbft-shared:/pbft-shared
     command: |
@@ -167,34 +180,34 @@ services:
         fi &&
         sawtooth keygen my_key &&
         sawtooth-validator -vv \
-          --endpoint tcp://validator-21:8800 \
+          --endpoint tcp://${GUEST}:8821 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
-          --bind network:tcp://eth0:8800 \
+          --bind network:tcp://eth0:8821 \
           --scheduler parallel \
           --peering static \
           --maximum-peer-connectivity 10000 \
-          --peers tcp://validator-0:8800 \
-          --peers tcp://validator-1:8800 \
-          --peers tcp://validator-2:8800 \
-          --peers tcp://validator-3:8800 \
-          --peers tcp://validator-4:8800 \
-          --peers tcp://validator-5:8800 \
-          --peers tcp://validator-6:8800 \
-          --peers tcp://validator-7:8800 \
-          --peers tcp://validator-8:8800 \
-          --peers tcp://validator-9:8800 \
-          --peers tcp://validator-10:8800 \
-          --peers tcp://validator-11:8800 \
-          --peers tcp://validator-12:8800 \
-          --peers tcp://validator-13:8800 \
-          --peers tcp://validator-14:8800 \
-          --peers tcp://validator-15:8800 \
-          --peers tcp://validator-16:8800 \
-          --peers tcp://validator-17:8800 \
-          --peers tcp://validator-18:8800 \
-          --peers tcp://validator-19:8800 \
-          --peers tcp://validator-20:8800
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816 \
+          --peers tcp://${HOST}:8817 \
+          --peers tcp://${HOST}:8818 \
+          --peers tcp://${HOST}:8819 \
+          --peers tcp://${GUEST}:8820
       "
   validator-22:
     image: hyperledger/sawtooth-validator:nightly
@@ -202,7 +215,9 @@ services:
     expose:
       - 4004
       - 5050
-      - 8800
+      - 8822
+    ports:
+      - "8822:8822"
     volumes:
       - pbft-shared:/pbft-shared
     command: |
@@ -219,35 +234,35 @@ services:
         fi &&
         sawtooth keygen my_key &&
         sawtooth-validator -vv \
-          --endpoint tcp://validator-22:8800 \
+          --endpoint tcp://${GUEST}:8822 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
-          --bind network:tcp://eth0:8800 \
+          --bind network:tcp://eth0:8822 \
           --scheduler parallel \
           --peering static \
           --maximum-peer-connectivity 10000 \
-          --peers tcp://validator-0:8800 \
-          --peers tcp://validator-1:8800 \
-          --peers tcp://validator-2:8800 \
-          --peers tcp://validator-3:8800 \
-          --peers tcp://validator-4:8800 \
-          --peers tcp://validator-5:8800 \
-          --peers tcp://validator-6:8800 \
-          --peers tcp://validator-7:8800 \
-          --peers tcp://validator-8:8800 \
-          --peers tcp://validator-9:8800 \
-          --peers tcp://validator-10:8800 \
-          --peers tcp://validator-11:8800 \
-          --peers tcp://validator-12:8800 \
-          --peers tcp://validator-13:8800 \
-          --peers tcp://validator-14:8800 \
-          --peers tcp://validator-15:8800 \
-          --peers tcp://validator-16:8800 \
-          --peers tcp://validator-17:8800 \
-          --peers tcp://validator-18:8800 \
-          --peers tcp://validator-19:8800 \
-          --peers tcp://validator-20:8800 \
-          --peers tcp://validator-21:8800
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816 \
+          --peers tcp://${HOST}:8817 \
+          --peers tcp://${HOST}:8818 \
+          --peers tcp://${HOST}:8819 \
+          --peers tcp://${GUEST}:8820 \
+          --peers tcp://${GUEST}:8821
       "
   validator-23:
     image: hyperledger/sawtooth-validator:nightly
@@ -255,7 +270,9 @@ services:
     expose:
       - 4004
       - 5050
-      - 8800
+      - 8823
+    ports:
+      - "8823:8823"
     volumes:
       - pbft-shared:/pbft-shared
     command: |
@@ -272,36 +289,36 @@ services:
         fi &&
         sawtooth keygen my_key &&
         sawtooth-validator -vv \
-          --endpoint tcp://validator-23:8800 \
+          --endpoint tcp://${GUEST}:8823 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
-          --bind network:tcp://eth0:8800 \
+          --bind network:tcp://eth0:8823 \
           --scheduler parallel \
           --peering static \
           --maximum-peer-connectivity 10000 \
-          --peers tcp://validator-0:8800 \
-          --peers tcp://validator-1:8800 \
-          --peers tcp://validator-2:8800 \
-          --peers tcp://validator-3:8800 \
-          --peers tcp://validator-4:8800 \
-          --peers tcp://validator-5:8800 \
-          --peers tcp://validator-6:8800 \
-          --peers tcp://validator-7:8800 \
-          --peers tcp://validator-8:8800 \
-          --peers tcp://validator-9:8800 \
-          --peers tcp://validator-10:8800 \
-          --peers tcp://validator-11:8800 \
-          --peers tcp://validator-12:8800 \
-          --peers tcp://validator-13:8800 \
-          --peers tcp://validator-14:8800 \
-          --peers tcp://validator-15:8800 \
-          --peers tcp://validator-16:8800 \
-          --peers tcp://validator-17:8800 \
-          --peers tcp://validator-18:8800 \
-          --peers tcp://validator-19:8800 \
-          --peers tcp://validator-20:8800 \
-          --peers tcp://validator-21:8800 \
-          --peers tcp://validator-22:8800
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816 \
+          --peers tcp://${HOST}:8817 \
+          --peers tcp://${HOST}:8818 \
+          --peers tcp://${HOST}:8819 \
+          --peers tcp://${GUEST}:8820 \
+          --peers tcp://${GUEST}:8821 \
+          --peers tcp://${GUEST}:8822
       "
   validator-24:
     image: hyperledger/sawtooth-validator:nightly
@@ -309,7 +326,9 @@ services:
     expose:
       - 4004
       - 5050
-      - 8800
+      - 8824
+    ports:
+      - "8824:8824"
     volumes:
       - pbft-shared:/pbft-shared
     command: |
@@ -326,37 +345,37 @@ services:
         fi &&
         sawtooth keygen my_key &&
         sawtooth-validator -vv \
-          --endpoint tcp://validator-24:8800 \
+          --endpoint tcp://${GUEST}:8824 \
           --bind component:tcp://eth0:4004 \
           --bind consensus:tcp://eth0:5050 \
-          --bind network:tcp://eth0:8800 \
+          --bind network:tcp://eth0:8824 \
           --scheduler parallel \
           --peering static \
           --maximum-peer-connectivity 10000 \
-          --peers tcp://validator-0:8800 \
-          --peers tcp://validator-1:8800 \
-          --peers tcp://validator-2:8800 \
-          --peers tcp://validator-3:8800 \
-          --peers tcp://validator-4:8800 \
-          --peers tcp://validator-5:8800 \
-          --peers tcp://validator-6:8800 \
-          --peers tcp://validator-7:8800 \
-          --peers tcp://validator-8:8800 \
-          --peers tcp://validator-9:8800 \
-          --peers tcp://validator-10:8800 \
-          --peers tcp://validator-11:8800 \
-          --peers tcp://validator-12:8800 \
-          --peers tcp://validator-13:8800 \
-          --peers tcp://validator-14:8800 \
-          --peers tcp://validator-15:8800 \
-          --peers tcp://validator-16:8800 \
-          --peers tcp://validator-17:8800 \
-          --peers tcp://validator-18:8800 \
-          --peers tcp://validator-19:8800 \
-          --peers tcp://validator-20:8800 \
-          --peers tcp://validator-21:8800 \
-          --peers tcp://validator-22:8800 \
-          --peers tcp://validator-23:8800
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816 \
+          --peers tcp://${HOST}:8817 \
+          --peers tcp://${HOST}:8818 \
+          --peers tcp://${HOST}:8819 \
+          --peers tcp://${GUEST}:8820 \
+          --peers tcp://${GUEST}:8821 \
+          --peers tcp://${GUEST}:8822 \
+          --peers tcp://${GUEST}:8823
       "
 # -------------=== pbft engines ===-------------
 
