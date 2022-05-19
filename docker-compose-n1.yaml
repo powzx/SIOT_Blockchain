@@ -352,7 +352,7 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8800 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000
       "
   validator-1:
@@ -385,9 +385,9 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8801 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800
+          --peers tcp://${HOST}:8800
       "
   validator-2:
     image: hyperledger/sawtooth-validator:nightly
@@ -419,10 +419,10 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8802 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801
       "
   validator-3:
     image: hyperledger/sawtooth-validator:nightly
@@ -454,11 +454,11 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8803 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802
       "
   validator-4:
     image: hyperledger/sawtooth-validator:nightly
@@ -490,12 +490,12 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8804 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
       "
 
   validator-5:
@@ -528,13 +528,13 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8805 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804
       "
 
   validator-6:
@@ -567,14 +567,14 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8806 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805
       "
 
   validator-7:
@@ -607,15 +607,15 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8807 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806
       "
 
   validator-8:
@@ -648,16 +648,16 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8808 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807
       "
 
   validator-9:
@@ -690,17 +690,17 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8809 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808
       "
 
   validator-10:
@@ -733,18 +733,18 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8810 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809
       "
 
   validator-11:
@@ -777,19 +777,19 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8811 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810
       "
 
   validator-12:
@@ -822,20 +822,20 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8812 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811
       "
 
   validator-13:
@@ -868,21 +868,21 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8813 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811 \
-          --seeds tcp://${HOST}:8812
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812
       "
 
   validator-14:
@@ -915,22 +915,22 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8814 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811 \
-          --seeds tcp://${HOST}:8812 \
-          --seeds tcp://${HOST}:8813
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813
       "
 
   validator-15:
@@ -963,23 +963,23 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8815 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811 \
-          --seeds tcp://${HOST}:8812 \
-          --seeds tcp://${HOST}:8813 \
-          --seeds tcp://${HOST}:8814
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814
       "
 
   validator-16:
@@ -1012,24 +1012,24 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8816 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811 \
-          --seeds tcp://${HOST}:8812 \
-          --seeds tcp://${HOST}:8813 \
-          --seeds tcp://${HOST}:8814 \
-          --seeds tcp://${HOST}:8815
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815
       "
 
   validator-17:
@@ -1062,25 +1062,25 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8817 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811 \
-          --seeds tcp://${HOST}:8812 \
-          --seeds tcp://${HOST}:8813 \
-          --seeds tcp://${HOST}:8814 \
-          --seeds tcp://${HOST}:8815 \
-          --seeds tcp://${HOST}:8816
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816
       "
 
   validator-18:
@@ -1113,26 +1113,26 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8818 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811 \
-          --seeds tcp://${HOST}:8812 \
-          --seeds tcp://${HOST}:8813 \
-          --seeds tcp://${HOST}:8814 \
-          --seeds tcp://${HOST}:8815 \
-          --seeds tcp://${HOST}:8816 \
-          --seeds tcp://${HOST}:8817
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816 \
+          --peers tcp://${HOST}:8817
       "
 
   validator-19:
@@ -1165,27 +1165,27 @@ services:
           --bind consensus:tcp://eth0:5050 \
           --bind network:tcp://eth0:8819 \
           --scheduler parallel \
-          --peering dynamic \
+          --peering static \
           --maximum-peer-connectivity 10000 \
-          --seeds tcp://${HOST}:8800 \
-          --seeds tcp://${HOST}:8801 \
-          --seeds tcp://${HOST}:8802 \
-          --seeds tcp://${HOST}:8803 \
-          --seeds tcp://${HOST}:8804 \
-          --seeds tcp://${HOST}:8805 \
-          --seeds tcp://${HOST}:8806 \
-          --seeds tcp://${HOST}:8807 \
-          --seeds tcp://${HOST}:8808 \
-          --seeds tcp://${HOST}:8809 \
-          --seeds tcp://${HOST}:8810 \
-          --seeds tcp://${HOST}:8811 \
-          --seeds tcp://${HOST}:8812 \
-          --seeds tcp://${HOST}:8813 \
-          --seeds tcp://${HOST}:8814 \
-          --seeds tcp://${HOST}:8815 \
-          --seeds tcp://${HOST}:8816 \
-          --seeds tcp://${HOST}:8817 \
-          --seeds tcp://${HOST}:8818
+          --peers tcp://${HOST}:8800 \
+          --peers tcp://${HOST}:8801 \
+          --peers tcp://${HOST}:8802 \
+          --peers tcp://${HOST}:8803 \
+          --peers tcp://${HOST}:8804 \
+          --peers tcp://${HOST}:8805 \
+          --peers tcp://${HOST}:8806 \
+          --peers tcp://${HOST}:8807 \
+          --peers tcp://${HOST}:8808 \
+          --peers tcp://${HOST}:8809 \
+          --peers tcp://${HOST}:8810 \
+          --peers tcp://${HOST}:8811 \
+          --peers tcp://${HOST}:8812 \
+          --peers tcp://${HOST}:8813 \
+          --peers tcp://${HOST}:8814 \
+          --peers tcp://${HOST}:8815 \
+          --peers tcp://${HOST}:8816 \
+          --peers tcp://${HOST}:8817 \
+          --peers tcp://${HOST}:8818
       "
 
 # -------------=== pbft engines ===-------------
