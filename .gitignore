@@ -1,2 +1,4 @@
 .env
 /families/demo-python/__pycache__
+families/demo-js/npm-debug.log
+families/demo-js/node_modules
