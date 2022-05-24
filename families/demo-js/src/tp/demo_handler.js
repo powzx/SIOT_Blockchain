@@ -1,9 +1,8 @@
+const { InternalError } = require('sawtooth-sdk/processor/exceptions');
 const { TransactionHandler } = require('sawtooth-sdk/processor/handler');
-const { InvalidTransaction, InternalError } = require('sawtooth-sdk').exceptions;
-const { decodeData, hash, setEntry } = require ('../lib/helper');
-const cbor = require('cbor');
+const { decodeCbor, hash, toInternalError, setEntry, applySet } = require ('../lib/helper');
 
-const FAMILY_NAME = "wallet-family", VERSION = "1.0", NAMESPACE = [hash(FAMILY_NAME).substring(0, 6)];
+const FAMILY_NAME = "wallet", VERSION = "1.0", NAMESPACE = [hash(FAMILY_NAME).substring(0, 6)];
 
 class WalletHandler extends TransactionHandler {
     constructor() {
@@ -11,8 +10,27 @@ class WalletHandler extends TransactionHandler {
     }
 
     apply(transactionRequest, context) {
-        return decodeData(transactionRequest.payload)
+        return decodeCbor(transactionRequest.payload)
+            .catch(toInternalError)
             .then((payload) => {
+                const name = payload.name;
+                const value = JSON.stringify(payload.value);
+                let address = NAMESPACE[0] + hash(name).substring(0, 64);
+                let actionFn = applySet;
+                let getPromise = context.getState([address]);
+                let actionPromise = getPromise.then(
+                    actionFn(context, address, name, value)
+                )
+
+                return actionPromise.then(addresses => {
+                    if (addresses.length === 0) {
+                        throw new InternalError('State error!');
+                    }
+                    console.log(`Name: ${name} Value: ${value}`);
+                })
+            });
+
+                /*
                 if (!payload.action) {
                     throw new InvalidTransaction("No action found in the payload.");
                 }
@@ -24,7 +42,6 @@ class WalletHandler extends TransactionHandler {
                 }
 
                 let action = payload.action;
-                let address = NAMESPACE[0] + hash(id).substring(0, 64);
 
                 switch (action) {
                     case "deposit":
@@ -66,7 +83,7 @@ class WalletHandler extends TransactionHandler {
             })
             .catch((err) => {
                 throw new InternalError("Internal error while decoding the payload.");
-            })
+            })*/
     }
 }
 
