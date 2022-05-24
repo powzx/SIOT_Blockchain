@@ -20,6 +20,15 @@ const input = {
         console.log('Error submitting transaction to Sawtooth REST API: ', err)
         console.log('Transaction: ', txn)
       }
+    },
+    getBatchList: async (factoryOptions) => {
+      return factoryOptions.get('/batches')
+    },
+    getTransaction: async (factoryOptions, transactionId) => {
+      return factoryOptions.get(`/transactions/${transactionId}`)
+    },
+    getState: async (factoryOptions) => {
+      return factoryOptions.get('/state')
     }
   }
   
