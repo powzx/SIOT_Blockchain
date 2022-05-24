@@ -1,6 +1,7 @@
 const { createHash, randomBytes } = require('crypto')
 const secp256k1 = require('secp256k1/elliptic')
 
+/*
 const createPrivateKey = () => {
   let privateKey
   do {
@@ -8,9 +9,10 @@ const createPrivateKey = () => {
   } while (!secp256k1.privateKeyVerify(privateKey))
   return privateKey
 }
+*/
 
 const EnclaveFactory = (privateKeyArg) => {
-  const privateKey = privateKeyArg || createPrivateKey()
+  const privateKey = privateKeyArg || ''
   const publicKey = secp256k1.publicKeyCreate(privateKey)
   return {
     privateKey,
