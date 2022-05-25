@@ -1,4 +1,5 @@
-const http = require('http')
+const https = require('https')
+const fs = require("fs")
 
 const { EnclaveFactory } = require('./enclave')
 const input = require('./input')
@@ -20,7 +21,12 @@ const walletTransactor = walletClient.newTransactor({
 })
 */
 
-const server = http.createServer(
+const options = {
+  key: fs.readFileSync("server_data/server.key"),
+  cert: fs.readFileSync("server_data/server.cert"),
+}
+
+const server = https.createServer(options,
   function(req, res) {
     if (req.method == "POST") {
       
@@ -58,8 +64,9 @@ const server = http.createServer(
   }
 )
 
-server.listen(3000)
-console.log("This server is listening to port 3000")
+server.listen(3000, function(req, res) {
+  console.log("This server is listening to port 3000")
+})
 
 // Test scripts for client
 
