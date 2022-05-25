@@ -13,6 +13,8 @@ class WalletHandler extends TransactionHandler {
         return decodeCbor(transactionRequest.payload)
             .catch(toInternalError)
             .then((payload) => {
+                console.log(payload)
+
                 const name = payload.name;
                 const value = JSON.stringify(payload.value);
                 let address = NAMESPACE[0] + hash(name).substring(0, 64);
