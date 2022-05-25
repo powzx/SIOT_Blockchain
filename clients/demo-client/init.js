@@ -1,3 +1,4 @@
+/*
 const { createContext, CryptoFactory } = require('sawtooth-sdk/signing')
 const fs = require('fs')
 const path = require('path')
@@ -24,3 +25,4 @@ const KeyCreator = () => {
 module.exports = {
   KeyCreator
 }
+*/

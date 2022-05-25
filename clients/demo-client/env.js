@@ -1,3 +1,4 @@
+/*
 // Import PRIVATE_KEY, PUBLIC_KEY, VALIDATOR_URL from .env file
 require('dotenv').config()
 
@@ -18,3 +19,4 @@ const env = {
 }
 
 module.exports = env
+*/
