@@ -1,11 +1,12 @@
 const http = require('http')
-const { resolve } = require('path')
 
 const { EnclaveFactory } = require('./enclave')
-const env = require('./env')
 const input = require('./input')
 const { SawtoothClientFactory } = require('./sawtooth-client')
 
+const restApiUrl = 'http://localhost:8008'
+
+/*
 const enclave = EnclaveFactory(Buffer.from(env.privateKey, 'hex'))
 
 const walletClient = SawtoothClientFactory({
@@ -17,6 +18,7 @@ const walletTransactor = walletClient.newTransactor({
   familyName: "wallet",
   familyVersion: "1.0"
 })
+*/
 
 const server = http.createServer(
   function(req, res) {
@@ -32,6 +34,17 @@ const server = http.createServer(
 
         console.log(body)
 
+        let privateKey = body["key"]
+        let enclave = EnclaveFactory(Buffer.from(privateKey, 'hex'))
+        let walletClient = SawtoothClientFactory({
+          enclave: enclave,
+          restApiUrl: restApiUrl
+        })
+        let walletTransactor = walletClient.newTransactor({
+          familyName: "wallet",
+          familyVersion: "1.0"
+        })
+
         input.submitPayload({
           "name": body["name"],
           "value": body["value"]
@@ -46,7 +59,7 @@ const server = http.createServer(
 )
 
 server.listen(3000)
-console.log("Server is running on port 3000")
+console.log("This server is listening to port 3000")
 
 // Test scripts for client
 
