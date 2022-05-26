@@ -1,5 +1,6 @@
 const https = require('https')
 const fs = require("fs")
+const path = require("path")
 
 const { EnclaveFactory } = require('./enclave')
 const input = require('./input')
@@ -21,9 +22,14 @@ const walletTransactor = walletClient.newTransactor({
 })
 */
 
+certFile = fs.readFileSync(path.join(__dirname, "server_data", "cert.pem"))
+keyFile = fs.readFileSync(path.join(__dirname, "server_data", "key.pem"))
+passphraseFile = fs.readFileSync(path.join(__dirname, "server_data", "passphrase.txt")).toString()
+
 const options = {
-  key: fs.readFileSync("server_data/server.key"),
-  cert: fs.readFileSync("server_data/server.cert"),
+  key: keyFile,
+  cert: certFile,
+  passphrase: passphraseFile
 }
 
 const server = https.createServer(options,
