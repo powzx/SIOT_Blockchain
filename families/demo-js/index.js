@@ -6,7 +6,7 @@ It will attempt to connect to a validator at localhost:4004
 const { TransactionProcessor } = require('sawtooth-sdk/processor');
 const WalletHandler = require('./src/tp/demo_handler');
 
-const transactionProcessor = new TransactionProcessor('tcp://localhost:4004');
+const transactionProcessor = new TransactionProcessor(`tcp://${process.env.VALIDATOR_NUM}:4004`);
 
 transactionProcessor.addHandler(new WalletHandler());
 transactionProcessor.start();
