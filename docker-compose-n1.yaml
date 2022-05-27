@@ -29,6 +29,8 @@ services:
     container_name: sawtooth-rest-api-default-0
     expose:
       - 8008
+    ports:
+      - "8008:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -284,6 +286,168 @@ services:
         tail -f /dev/null
       "
     stop_signal: SIGKILL
+
+# --------------=== Demo TP ===---------------
+
+  demo-tp-0:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-0
+    environment:
+      - "VALIDATOR_NUM=validator-0"
+    depends_on:
+      - validator-0
+
+  demo-tp-1:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-1
+    environment:
+      - "VALIDATOR_NUM=validator-1"
+    depends_on:
+      - validator-1
+
+  demo-tp-2:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-2
+    environment:
+      - "VALIDATOR_NUM=validator-2"
+    depends_on:
+      - validator-2
+
+  demo-tp-3:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-3
+    environment:
+      - "VALIDATOR_NUM=validator-3"
+    depends_on:
+      - validator-3
+
+  demo-tp-4:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-4
+    environment:
+      - "VALIDATOR_NUM=validator-4"
+    depends_on:
+      - validator-4
+
+  demo-tp-5:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-5
+    environment:
+      - "VALIDATOR_NUM=validator-5"
+    depends_on:
+      - validator-5
+
+  demo-tp-6:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-6
+    environment:
+      - "VALIDATOR_NUM=validator-6"
+    depends_on:
+      - validator-6
+
+  demo-tp-7:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-7
+    environment:
+      - "VALIDATOR_NUM=validator-7"
+    depends_on:
+      - validator-7
+
+  demo-tp-8:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-8
+    environment:
+      - "VALIDATOR_NUM=validator-8"
+    depends_on:
+      - validator-8
+
+  demo-tp-9:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-9
+    environment:
+      - "VALIDATOR_NUM=validator-9"
+    depends_on:
+      - validator-9
+
+  demo-tp-10:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-10
+    environment:
+      - "VALIDATOR_NUM=validator-10"
+    depends_on:
+      - validator-10
+
+  demo-tp-11:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-11
+    environment:
+      - "VALIDATOR_NUM=validator-11"
+    depends_on:
+      - validator-11
+
+  demo-tp-12:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-12
+    environment:
+      - "VALIDATOR_NUM=validator-12"
+    depends_on:
+      - validator-12
+
+  demo-tp-13:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-13
+    environment:
+      - "VALIDATOR_NUM=validator-13"
+    depends_on:
+      - validator-13
+
+  demo-tp-14:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-14
+    environment:
+      - "VALIDATOR_NUM=validator-14"
+    depends_on:
+      - validator-14
+
+  demo-tp-15:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-15
+    environment:
+      - "VALIDATOR_NUM=validator-15"
+    depends_on:
+      - validator-15
+
+  demo-tp-16:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-16
+    environment:
+      - "VALIDATOR_NUM=validator-16"
+    depends_on:
+      - validator-16
+
+  demo-tp-17:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-17
+    environment:
+      - "VALIDATOR_NUM=validator-17"
+    depends_on:
+      - validator-17
+
+  demo-tp-18:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-18
+    environment:
+      - "VALIDATOR_NUM=validator-18"
+    depends_on:
+      - validator-18
+
+  demo-tp-19:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-19
+    environment:
+      - "VALIDATOR_NUM=validator-19"
+    depends_on:
+      - validator-19
 
 # -------------=== validators ===-------------
 

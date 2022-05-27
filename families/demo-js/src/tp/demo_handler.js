@@ -10,6 +10,7 @@ class WalletHandler extends TransactionHandler {
     }
 
     apply(transactionRequest, context) {
+        console.log("Applying transaction on network...")
         return decodeCbor(transactionRequest.payload)
             .catch(toInternalError)
             .then((payload) => {

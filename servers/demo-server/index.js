@@ -62,6 +62,7 @@ const server = https.createServer(options,
           "value": body["value"]
         }, walletTransactor).then((msg) => {
           console.log(msg)
+          console.log("Payload successfully submitted to Rest API")
         })
       })
     } else {
