@@ -6,7 +6,29 @@ const { EnclaveFactory } = require('./enclave')
 const input = require('./input')
 const { SawtoothClientFactory } = require('./sawtooth-client')
 
-const restApiUrl = 'http://localhost:8008'
+const NUM_OF_PORTS = 20
+const ports = {
+  0: "8008",
+  1: "8009",
+  2: "8010",
+  3: "8011",
+  4: "8012",
+  5: "8013",
+  6: "8014",
+  7: "8015",
+  8: "8016",
+  9: "8017",
+  10: "8018",
+  11: "8019",
+  12: "8020",
+  13: "8021",
+  14: "8022",
+  15: "8023",
+  16: "8024",
+  17: "8025",
+  18: "8026",
+  19: "8027"
+}
 
 /*
 const enclave = EnclaveFactory(Buffer.from(env.privateKey, 'hex'))
@@ -46,6 +68,10 @@ const server = https.createServer(options,
 
         console.log(body)
 
+        // select a random port to submit to
+        let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+        let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+
         let privateKey = body["key"]
         let enclave = EnclaveFactory(Buffer.from(privateKey, 'hex'))
         let walletClient = SawtoothClientFactory({
@@ -62,7 +88,7 @@ const server = https.createServer(options,
           "value": body["value"]
         }, walletTransactor).then((msg) => {
           console.log(msg)
-          console.log("Payload successfully submitted to Rest API")
+          console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
         })
       })
     } else {

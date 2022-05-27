@@ -44,6 +44,8 @@ services:
     container_name: sawtooth-rest-api-default-1
     expose:
       - 8008
+    ports:
+      - "8009:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -57,6 +59,8 @@ services:
     container_name: sawtooth-rest-api-default-2
     expose:
       - 8008
+    ports:
+      - "8010:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -70,6 +74,8 @@ services:
     container_name: sawtooth-rest-api-default-3
     expose:
       - 8008
+    ports:
+      - "8011:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -83,6 +89,8 @@ services:
     container_name: sawtooth-rest-api-default-4
     expose:
       - 8008
+    ports:
+      - "8012:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -96,6 +104,8 @@ services:
     container_name: sawtooth-rest-api-default-5
     expose:
       - 8008
+    ports:
+      - "8013:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -108,6 +118,8 @@ services:
     container_name: sawtooth-rest-api-default-6
     expose:
       - 8008
+    ports:
+      - "8014:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -120,6 +132,8 @@ services:
     container_name: sawtooth-rest-api-default-7
     expose:
       - 8008
+    ports:
+      - "8015:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -132,6 +146,8 @@ services:
     container_name: sawtooth-rest-api-default-8
     expose:
       - 8008
+    ports:
+      - "8016:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -144,6 +160,8 @@ services:
     container_name: sawtooth-rest-api-default-9
     expose:
       - 8008
+    ports:
+      - "8017:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -156,6 +174,8 @@ services:
     container_name: sawtooth-rest-api-default-10
     expose:
       - 8008
+    ports:
+      - "8018:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -168,6 +188,8 @@ services:
     container_name: sawtooth-rest-api-default-11
     expose:
       - 8008
+    ports:
+      - "8019:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -175,12 +197,13 @@ services:
           --bind rest-api-11:8008
       "
 
-
   rest-api-12:
     image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-12
     expose:
       - 8008
+    ports:
+      - "8020:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -193,6 +216,8 @@ services:
     container_name: sawtooth-rest-api-default-13
     expose:
       - 8008
+    ports:
+      - "8021:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -205,6 +230,8 @@ services:
     container_name: sawtooth-rest-api-default-14
     expose:
       - 8008
+    ports:
+      - "8022:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -217,6 +244,8 @@ services:
     container_name: sawtooth-rest-api-default-15
     expose:
       - 8008
+    ports:
+      - "8023:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -229,6 +258,8 @@ services:
     container_name: sawtooth-rest-api-default-16
     expose:
       - 8008
+    ports:
+      - "8024:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -241,6 +272,8 @@ services:
     container_name: sawtooth-rest-api-default-17
     expose:
       - 8008
+    ports:
+      - "8025:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -253,6 +286,8 @@ services:
     container_name: sawtooth-rest-api-default-18
     expose:
       - 8008
+    ports:
+      - "8026:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -265,6 +300,8 @@ services:
     container_name: sawtooth-rest-api-default-19
     expose:
       - 8008
+    ports:
+      - "8027:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
