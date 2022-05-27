@@ -25,7 +25,7 @@ services:
 # -------------=== rest api ===-------------
 
   rest-api-0:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-0
     expose:
       - 8008
@@ -40,7 +40,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-1:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-1
     expose:
       - 8008
@@ -53,7 +53,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-2:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-2
     expose:
       - 8008
@@ -66,7 +66,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-3:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-3
     expose:
       - 8008
@@ -79,7 +79,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-4:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-4
     expose:
       - 8008
@@ -92,7 +92,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-5:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-5
     expose:
       - 8008
@@ -104,7 +104,7 @@ services:
       "
 
   rest-api-6:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-6
     expose:
       - 8008
@@ -116,7 +116,7 @@ services:
       "
 
   rest-api-7:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-7
     expose:
       - 8008
@@ -128,7 +128,7 @@ services:
       "
 
   rest-api-8:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-8
     expose:
       - 8008
@@ -140,7 +140,7 @@ services:
       "
 
   rest-api-9:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-9
     expose:
       - 8008
@@ -152,7 +152,7 @@ services:
       "
 
   rest-api-10:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-10
     expose:
       - 8008
@@ -164,7 +164,7 @@ services:
       "
 
   rest-api-11:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-11
     expose:
       - 8008
@@ -177,7 +177,7 @@ services:
 
 
   rest-api-12:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-12
     expose:
       - 8008
@@ -189,7 +189,7 @@ services:
       "
 
   rest-api-13:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-13
     expose:
       - 8008
@@ -201,7 +201,7 @@ services:
       "
 
   rest-api-14:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-14
     expose:
       - 8008
@@ -213,7 +213,7 @@ services:
       "
 
   rest-api-15:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-15
     expose:
       - 8008
@@ -225,7 +225,7 @@ services:
       "
 
   rest-api-16:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-16
     expose:
       - 8008
@@ -237,7 +237,7 @@ services:
       "
 
   rest-api-17:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-17
     expose:
       - 8008
@@ -249,7 +249,7 @@ services:
       "
 
   rest-api-18:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-18
     expose:
       - 8008
@@ -261,7 +261,7 @@ services:
       "
 
   rest-api-19:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-19
     expose:
       - 8008
@@ -276,7 +276,7 @@ services:
 # -------------=== shell ===-------------
 
   shell:
-    image: hyperledger/sawtooth-shell:nightly
+    image: hyperledger/sawtooth-shell:chime
     container_name: sawtooth-shell-default
     volumes:
       - pbft-shared:/pbft-shared
@@ -452,7 +452,7 @@ services:
 # -------------=== validators ===-------------
 
   validator-0:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-0
     expose:
       - 4004
@@ -528,7 +528,7 @@ services:
           --maximum-peer-connectivity 10000
       "
   validator-1:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-1
     expose:
       - 4004
@@ -562,7 +562,7 @@ services:
           --peers tcp://${HOST}:8800
       "
   validator-2:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-2
     expose:
       - 4004
@@ -597,7 +597,7 @@ services:
           --peers tcp://${HOST}:8801
       "
   validator-3:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-3
     expose:
       - 4004
@@ -633,7 +633,7 @@ services:
           --peers tcp://${HOST}:8802
       "
   validator-4:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-4
     expose:
       - 4004
@@ -671,7 +671,7 @@ services:
       "
 
   validator-5:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-5
     expose:
       - 4004
@@ -710,7 +710,7 @@ services:
       "
 
   validator-6:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-6
     expose:
       - 4004
@@ -750,7 +750,7 @@ services:
       "
 
   validator-7:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-7
     expose:
       - 4004
@@ -791,7 +791,7 @@ services:
       "
 
   validator-8:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-8
     expose:
       - 4004
@@ -833,7 +833,7 @@ services:
       "
 
   validator-9:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-9
     expose:
       - 4004
@@ -876,7 +876,7 @@ services:
       "
 
   validator-10:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-10
     expose:
       - 4004
@@ -920,7 +920,7 @@ services:
       "
 
   validator-11:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-11
     expose:
       - 4004
@@ -965,7 +965,7 @@ services:
       "
 
   validator-12:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-12
     expose:
       - 4004
@@ -1011,7 +1011,7 @@ services:
       "
 
   validator-13:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-13
     expose:
       - 4004
@@ -1058,7 +1058,7 @@ services:
       "
 
   validator-14:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-14
     expose:
       - 4004
@@ -1106,7 +1106,7 @@ services:
       "
 
   validator-15:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-15
     expose:
       - 4004
@@ -1155,7 +1155,7 @@ services:
       "
 
   validator-16:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-16
     expose:
       - 4004
@@ -1205,7 +1205,7 @@ services:
       "
 
   validator-17:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-17
     expose:
       - 4004
@@ -1256,7 +1256,7 @@ services:
       "
 
   validator-18:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-18
     expose:
       - 4004
@@ -1308,7 +1308,7 @@ services:
       "
 
   validator-19:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-19
     expose:
       - 4004
@@ -1363,121 +1363,121 @@ services:
 # -------------=== pbft engines ===-------------
 
   pbft-0:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-0
     command: pbft-engine -vv --connect tcp://validator-0:5050
     stop_signal: SIGKILL
 
   pbft-1:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-1
     command: pbft-engine -vv --connect tcp://validator-1:5050
     stop_signal: SIGKILL
 
   pbft-2:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-2
     command: pbft-engine -vv --connect tcp://validator-2:5050
     stop_signal: SIGKILL
 
   pbft-3:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-3
     command: pbft-engine -vv --connect tcp://validator-3:5050
     stop_signal: SIGKILL
 
   pbft-4:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-4
     command: pbft-engine -vv --connect tcp://validator-4:5050
     stop_signal: SIGKILL
 
   pbft-5:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-5
     command: pbft-engine -vv --connect tcp://validator-5:5050
     stop_signal: SIGKILL
 
   pbft-6:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-6
     command: pbft-engine -vv --connect tcp://validator-6:5050
     stop_signal: SIGKILL
 
   pbft-7:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-7
     command: pbft-engine -vv --connect tcp://validator-7:5050
     stop_signal: SIGKILL
 
   pbft-8:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-8
     command: pbft-engine -vv --connect tcp://validator-8:5050
     stop_signal: SIGKILL
 
   pbft-9:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-9
     command: pbft-engine -vv --connect tcp://validator-9:5050
     stop_signal: SIGKILL
 
   pbft-10:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-10
     command: pbft-engine -vv --connect tcp://validator-10:5050
     stop_signal: SIGKILL
 
   pbft-11:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-11
     command: pbft-engine -vv --connect tcp://validator-11:5050
     stop_signal: SIGKILL
 
   pbft-12:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-12
     command: pbft-engine -vv --connect tcp://validator-12:5050
     stop_signal: SIGKILL
 
   pbft-13:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-13
     command: pbft-engine -vv --connect tcp://validator-13:5050
     stop_signal: SIGKILL
 
   pbft-14:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-14
     command: pbft-engine -vv --connect tcp://validator-14:5050
     stop_signal: SIGKILL
 
   pbft-15:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-15
     command: pbft-engine -vv --connect tcp://validator-15:5050
     stop_signal: SIGKILL
 
   pbft-16:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-16
     command: pbft-engine -vv --connect tcp://validator-16:5050
     stop_signal: SIGKILL
 
   pbft-17:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-17
     command: pbft-engine -vv --connect tcp://validator-17:5050
     stop_signal: SIGKILL
 
   pbft-18:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-18
     command: pbft-engine -vv --connect tcp://validator-18:5050
     stop_signal: SIGKILL
 
   pbft-19:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-19
     command: pbft-engine -vv --connect tcp://validator-19:5050
     stop_signal: SIGKILL
