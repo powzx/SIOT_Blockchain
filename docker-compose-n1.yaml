@@ -287,6 +287,148 @@ services:
       "
     stop_signal: SIGKILL
 
+# ------------=== Settings TP ===-------------
+
+  settings-tp-0:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-0
+    depends_on:
+      - validator-0
+    entrypoint: settings-tp -vv -C tcp://validator-0:4004
+
+  settings-tp-1:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-1
+    depends_on:
+      - validator-1
+    entrypoint: settings-tp -vv -C tcp://validator-1:4004
+
+  settings-tp-2:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-2
+    depends_on:
+      - validator-2
+    entrypoint: settings-tp -vv -C tcp://validator-2:4004
+
+  settings-tp-3:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-3
+    depends_on:
+      - validator-3
+    entrypoint: settings-tp -vv -C tcp://validator-3:4004
+
+  settings-tp-4:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-4
+    depends_on:
+      - validator-4
+    entrypoint: settings-tp -vv -C tcp://validator-4:4004
+
+  settings-tp-5:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-5
+    depends_on:
+      - validator-5
+    entrypoint: settings-tp -vv -C tcp://validator-5:4004
+
+  settings-tp-6:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-6
+    depends_on:
+      - validator-6
+    entrypoint: settings-tp -vv -C tcp://validator-6:4004
+
+  settings-tp-7:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-7
+    depends_on:
+      - validator-7
+    entrypoint: settings-tp -vv -C tcp://validator-7:4004
+
+  settings-tp-8:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-8
+    depends_on:
+      - validator-8
+    entrypoint: settings-tp -vv -C tcp://validator-8:4004
+
+  settings-tp-9:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-9
+    depends_on:
+      - validator-9
+    entrypoint: settings-tp -vv -C tcp://validator-9:4004
+
+  settings-tp-10:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-10
+    depends_on:
+      - validator-10
+    entrypoint: settings-tp -vv -C tcp://validator-10:4004
+
+  settings-tp-11:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-11
+    depends_on:
+      - validator-11
+    entrypoint: settings-tp -vv -C tcp://validator-11:4004
+
+  settings-tp-12:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-12
+    depends_on:
+      - validator-12
+    entrypoint: settings-tp -vv -C tcp://validator-12:4004
+
+  settings-tp-13:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-13
+    depends_on:
+      - validator-13
+    entrypoint: settings-tp -vv -C tcp://validator-13:4004
+
+  settings-tp-14:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-14
+    depends_on:
+      - validator-14
+    entrypoint: settings-tp -vv -C tcp://validator-14:4004
+
+  settings-tp-15:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-15
+    depends_on:
+      - validator-15
+    entrypoint: settings-tp -vv -C tcp://validator-15:4004
+
+  settings-tp-16:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-16
+    depends_on:
+      - validator-16
+    entrypoint: settings-tp -vv -C tcp://validator-16:4004
+
+  settings-tp-17:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-17
+    depends_on:
+      - validator-17
+    entrypoint: settings-tp -vv -C tcp://validator-17:4004
+
+  settings-tp-18:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-18
+    depends_on:
+      - validator-18
+    entrypoint: settings-tp -vv -C tcp://validator-18:4004
+
+  settings-tp-19:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-19
+    depends_on:
+      - validator-19
+    entrypoint: settings-tp -vv -C tcp://validator-19:4004
+
 # --------------=== Demo TP ===---------------
 
   demo-tp-0:
