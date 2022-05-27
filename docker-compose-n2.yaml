@@ -25,7 +25,7 @@ services:
 # -------------=== rest api ===-------------
 
   rest-api-20:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-20
     expose:
       - 8008
@@ -38,7 +38,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-21:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-21
     expose:
       - 8008
@@ -51,7 +51,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-22:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-22
     expose:
       - 8008
@@ -64,7 +64,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-23:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-23
     expose:
       - 8008
@@ -77,7 +77,7 @@ services:
     stop_signal: SIGKILL
 
   rest-api-24:
-    image: hyperledger/sawtooth-rest-api:nightly
+    image: hyperledger/sawtooth-rest-api:chime
     container_name: sawtooth-rest-api-default-24
     expose:
       - 8008
@@ -92,7 +92,7 @@ services:
 # -------------=== shell ===-------------
 
   shell:
-    image: hyperledger/sawtooth-shell:nightly
+    image: hyperledger/sawtooth-shell:chime
     container_name: sawtooth-shell-default
     volumes:
       - pbft-shared:/pbft-shared
@@ -103,10 +103,126 @@ services:
       "
     stop_signal: SIGKILL
 
+# ------------=== Settings TP ===-------------
+
+  settings-tp-20:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-20
+    depends_on:
+      - validator-20
+    entrypoint: settings-tp -vv -C tcp://validator-20:4004
+
+  settings-tp-21:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-21
+    depends_on:
+      - validator-21
+    entrypoint: settings-tp -vv -C tcp://validator-21:4004
+
+  settings-tp-22:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-22
+    depends_on:
+      - validator-22
+    entrypoint: settings-tp -vv -C tcp://validator-22:4004
+
+  settings-tp-23:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-23
+    depends_on:
+      - validator-23
+    entrypoint: settings-tp -vv -C tcp://validator-23:4004
+
+  settings-tp-24:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-24
+    depends_on:
+      - validator-24
+    entrypoint: settings-tp -vv -C tcp://validator-24:4004
+
+# -------------=== IntKey TP ===--------------
+
+  intkey-tp-python-20:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-20
+    depends_on:
+      - validator-20
+    entrypoint: intkey-tp-python -vv -C tcp://validator-20:4004
+
+  intkey-tp-python-21:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-21
+    depends_on:
+      - validator-21
+    entrypoint: intkey-tp-python -vv -C tcp://validator-21:4004
+
+  intkey-tp-python-22:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-22
+    depends_on:
+      - validator-22
+    entrypoint: intkey-tp-python -vv -C tcp://validator-22:4004
+
+  intkey-tp-python-23:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-23
+    depends_on:
+      - validator-23
+    entrypoint: intkey-tp-python -vv -C tcp://validator-23:4004
+
+  intkey-tp-python-24:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-24
+    depends_on:
+      - validator-24
+    entrypoint: intkey-tp-python -vv -C tcp://validator-24:4004
+
+# --------------=== Demo TP ===---------------
+
+  demo-tp-20:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-20
+    environment:
+      - "VALIDATOR_NUM=validator-20"
+    depends_on:
+      - validator-20
+
+  demo-tp-21:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-21
+    environment:
+      - "VALIDATOR_NUM=validator-21"
+    depends_on:
+      - validator-21
+
+  demo-tp-22:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-22
+    environment:
+      - "VALIDATOR_NUM=validator-22"
+    depends_on:
+      - validator-22
+
+  demo-tp-23:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-23
+    environment:
+      - "VALIDATOR_NUM=validator-23"
+    depends_on:
+      - validator-23
+
+  demo-tp-24:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-24
+    environment:
+      - "VALIDATOR_NUM=validator-24"
+    depends_on:
+      - validator-24
+
 # -------------=== validators ===-------------
 
   validator-20:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-20
     expose:
       - 4004
@@ -159,7 +275,7 @@ services:
           --peers tcp://${HOST}:8819
       "
   validator-21:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-21
     expose:
       - 4004
@@ -213,7 +329,7 @@ services:
           --peers tcp://${GUEST}:8820
       "
   validator-22:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-22
     expose:
       - 4004
@@ -268,7 +384,7 @@ services:
           --peers tcp://${GUEST}:8821
       "
   validator-23:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-23
     expose:
       - 4004
@@ -324,7 +440,7 @@ services:
           --peers tcp://${GUEST}:8822
       "
   validator-24:
-    image: hyperledger/sawtooth-validator:nightly
+    image: hyperledger/sawtooth-validator:chime
     container_name: sawtooth-validator-default-24
     expose:
       - 4004
@@ -383,31 +499,31 @@ services:
 # -------------=== pbft engines ===-------------
 
   pbft-20:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-20
     command: pbft-engine -vv --connect tcp://validator-20:5050
     stop_signal: SIGKILL
 
   pbft-21:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-21
     command: pbft-engine -vv --connect tcp://validator-21:5050
     stop_signal: SIGKILL
 
   pbft-22:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-22
     command: pbft-engine -vv --connect tcp://validator-22:5050
     stop_signal: SIGKILL
 
   pbft-23:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-23
     command: pbft-engine -vv --connect tcp://validator-23:5050
     stop_signal: SIGKILL
 
   pbft-24:
-    image: hyperledger/sawtooth-pbft-engine:nightly
+    image: hyperledger/sawtooth-pbft-engine:chime
     container_name: sawtooth-pbft-engine-default-24
     command: pbft-engine -vv --connect tcp://validator-24:5050
     stop_signal: SIGKILL
