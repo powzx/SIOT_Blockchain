@@ -103,6 +103,122 @@ services:
       "
     stop_signal: SIGKILL
 
+# ------------=== Settings TP ===-------------
+
+  settings-tp-20:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-20
+    depends_on:
+      - validator-20
+    entrypoint: settings-tp -vv -C tcp://validator-20:4004
+
+  settings-tp-21:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-21
+    depends_on:
+      - validator-21
+    entrypoint: settings-tp -vv -C tcp://validator-21:4004
+
+  settings-tp-22:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-22
+    depends_on:
+      - validator-22
+    entrypoint: settings-tp -vv -C tcp://validator-22:4004
+
+  settings-tp-23:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-23
+    depends_on:
+      - validator-23
+    entrypoint: settings-tp -vv -C tcp://validator-23:4004
+
+  settings-tp-24:
+    image: hyperledger/sawtooth-settings-tp:chime
+    container_name: sawtooth-settings-tp-default-24
+    depends_on:
+      - validator-24
+    entrypoint: settings-tp -vv -C tcp://validator-24:4004
+
+# -------------=== IntKey TP ===--------------
+
+  intkey-tp-python-20:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-20
+    depends_on:
+      - validator-20
+    entrypoint: intkey-tp-python -vv -C tcp://validator-20:4004
+
+  intkey-tp-python-21:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-21
+    depends_on:
+      - validator-21
+    entrypoint: intkey-tp-python -vv -C tcp://validator-21:4004
+
+  intkey-tp-python-22:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-22
+    depends_on:
+      - validator-22
+    entrypoint: intkey-tp-python -vv -C tcp://validator-22:4004
+
+  intkey-tp-python-23:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-23
+    depends_on:
+      - validator-23
+    entrypoint: intkey-tp-python -vv -C tcp://validator-23:4004
+
+  intkey-tp-python-24:
+    image: hyperledger/sawtooth-intkey-tp-python:chime
+    container_name: sawtooth-intkey-tp-python-default-24
+    depends_on:
+      - validator-24
+    entrypoint: intkey-tp-python -vv -C tcp://validator-24:4004
+
+# --------------=== Demo TP ===---------------
+
+  demo-tp-20:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-20
+    environment:
+      - "VALIDATOR_NUM=validator-20"
+    depends_on:
+      - validator-20
+
+  demo-tp-21:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-21
+    environment:
+      - "VALIDATOR_NUM=validator-21"
+    depends_on:
+      - validator-21
+
+  demo-tp-22:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-22
+    environment:
+      - "VALIDATOR_NUM=validator-22"
+    depends_on:
+      - validator-22
+
+  demo-tp-23:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-23
+    environment:
+      - "VALIDATOR_NUM=validator-23"
+    depends_on:
+      - validator-23
+
+  demo-tp-24:
+    image: hyperledger/demo-tp
+    container_name: sawtooth-demo-tp-24
+    environment:
+      - "VALIDATOR_NUM=validator-24"
+    depends_on:
+      - validator-24
+
 # -------------=== validators ===-------------
 
   validator-20:
