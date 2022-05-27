@@ -2,7 +2,6 @@ const https = require('https')
 const fs = require("fs")
 const path = require("path")
 
-const { EnclaveFactory } = require('./enclave')
 const input = require('./input')
 const { SawtoothClientFactory } = require('./sawtooth-client')
 
@@ -72,10 +71,10 @@ const server = https.createServer(options,
         let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
         let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
 
-        let privateKey = body["key"]
-        let enclave = EnclaveFactory(Buffer.from(privateKey, 'hex'))
+        let publicKey = body["publicKey"]
+        //let enclave = EnclaveFactory(Buffer.from(publicKey, 'hex'))
         let walletClient = SawtoothClientFactory({
-          enclave: enclave,
+          publicKey: publicKey,
           restApiUrl: restApiUrl
         })
         let walletTransactor = walletClient.newTransactor({
