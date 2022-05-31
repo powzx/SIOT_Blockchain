@@ -1,4 +1,7 @@
+const express = require('express')
+const socketIo = require('socket.io')
 const https = require('https')
+
 const fs = require("fs")
 const path = require("path")
 
@@ -43,6 +46,8 @@ const walletTransactor = walletClient.newTransactor({
 })
 */
 
+var app = express()
+
 certFile = fs.readFileSync(path.join(__dirname, "server_data", "cert.pem"))
 keyFile = fs.readFileSync(path.join(__dirname, "server_data", "key.pem"))
 passphraseFile = fs.readFileSync(path.join(__dirname, "server_data", "passphrase.txt")).toString()
@@ -53,6 +58,9 @@ const options = {
   passphrase: passphraseFile
 }
 
+const server = https.createServer(options, app)
+
+/*
 const server = https.createServer(options,
   function(req, res) {
     if (req.method == "POST") {
@@ -95,6 +103,125 @@ const server = https.createServer(options,
     }
   }
 )
+*/
+
+var io = socketIo(server)
+
+io.on('connection', (socket) => { 
+  console.log('New client connected')
+
+  let walletClient
+
+  let publicKey
+  let restApiPort
+  let restApiUrl
+
+  socket.on('init', (data) => {
+    publicKey = data['publicKey']
+    console.log(`Public Key: ${publicKey}`)
+  })
+
+  socket.on('startRequest', (data) => {
+    console.log(data)
+
+    // select a random port to submit to
+    restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+    restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+
+    walletClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+
+    let walletTransactor = walletClient.newTransactor({
+      familyName: "wallet",
+      familyVersion: "1.0"
+    })
+
+    let payloadBytes
+    let transactionHeaderBytes
+    let transactionHeaderBytesHash
+
+    payloadBytes = walletTransactor.createPayloadBytes(data)
+    transactionHeaderBytes = walletTransactor.createTransactionHeaderBytes(payloadBytes)
+    transactionHeaderBytesHash = walletTransactor.createTransactionHeaderBytesHash(transactionHeaderBytes)
+
+    socket.emit('sign', {
+      'type': 'transaction',
+      'headerBytes': transactionHeaderBytes,
+      'headerHash': transactionHeaderBytesHash,
+      'payload': payloadBytes
+    })
+  })
+
+  socket.on('batchRequest', (data) => {
+    let transactionHeaderBytes = data['headerBytes']
+    let signature = data['signature']
+    let payloadBytes = data['payload']
+
+    let walletTransactor = walletClient.newTransactor({
+      familyName: "wallet",
+      familyVersion: "1.0"
+    })
+
+    let transaction
+    let transactions
+    let batchHeaderBytes
+    let batchHeaderBytesHash
+
+    transaction = walletTransactor.createTransaction(transactionHeaderBytes, signature, payloadBytes)
+    transactions = [transaction]
+    batchHeaderBytes = walletTransactor.createBatchHeaderBytes(transactions)
+    batchHeaderBytesHash = walletTransactor.createBatchHeaderBytesHash(batchHeaderBytes)
+
+    socket.emit('sign', {
+      'type': 'batch',
+      'headerBytes': batchHeaderBytes,
+      'headerHash': batchHeaderBytesHash,
+      'transactions': transactions
+    })
+  })
+
+  socket.on('endRequest', async (data) => {
+    let batchHeaderBytes = data['headerBytes']
+    let signature = data['signature']
+    let transactions = data['transactions']
+
+    let walletTransactor = walletClient.newTransactor({
+      familyName: "wallet",
+      familyVersion: "1.0"
+    })
+
+    let batch
+    let batchListBytes
+
+    batch = walletTransactor.createBatch(batchHeaderBytes, signature, transactions)
+    batchListBytes = walletTransactor.createBatchList(batch)
+
+    try {
+      console.log(`Submitting report transaction to Sawtooth REST API`)
+      // Wait for the response from the validator receiving the transaction
+      const txnRes = await walletTransactor.post(batchListBytes).then((msg) => {
+        console.log(msg)
+        console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
+      })
+      // Log only a few key items from the response, because it's a lot of info
+      console.log({
+        status: txnRes.status,
+        statusText: txnRes.statusText
+      })
+
+      //return txnRes
+    } catch (err) {
+      console.log('Error submitting transaction to Sawtooth REST API: ', err)
+      //console.log('Transaction: ', batchListBytes)
+    }
+  })
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected')
+  })
+})
 
 server.listen(3000, function(req, res) {
   console.log("This server is listening to port 3000")
@@ -118,7 +245,7 @@ input.getBatchList(walletClient).then((data) => {
 */
 
 /*
-let transactionId = '55a5098c0dce4c3a965180d49d2ccbe410087d57a1d20d3ca4ce372956277afe2d8651ac47928afb7574cd82990e79165e267fd62ed388d087306054799e99dd'
+let transactionId = ''
 input.getTransaction(walletClient, transactionId).then((data) => {
   console.log(data)
 })
