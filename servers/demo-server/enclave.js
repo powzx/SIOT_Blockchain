@@ -1,5 +1,5 @@
-const { createHash, randomBytes } = require('crypto')
-const secp256k1 = require('secp256k1/elliptic')
+//const { createHash, randomBytes } = require('crypto')
+//const secp256k1 = require('secp256k1/elliptic')
 
 /*
 const createPrivateKey = () => {
@@ -10,7 +10,7 @@ const createPrivateKey = () => {
   return privateKey
 }
 */
-
+/*
 const EnclaveFactory = (privateKeyArg) => {
   const privateKey = privateKeyArg || ''
   const publicKey = secp256k1.publicKeyCreate(privateKey)
@@ -29,3 +29,4 @@ const EnclaveFactory = (privateKeyArg) => {
 module.exports = {
   EnclaveFactory
 }
+*/

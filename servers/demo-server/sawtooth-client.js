@@ -37,8 +37,8 @@ const SawtoothClientFactory = (factoryOptions) => {
             familyVersion: _familyVersion,
             inputs: [_familyNamespace],
             outputs: [_familyNamespace],
-            signerPublicKey: factoryOptions.enclave.publicKey.toString('hex'),
-            batcherPublicKey: factoryOptions.enclave.publicKey.toString('hex'),
+            signerPublicKey: factoryOptions.publicKey,
+            batcherPublicKey: factoryOptions.publicKey,
             dependencies: [],
             nonce: randomBytes(32).toString('hex'),
             payloadSha512: createHash('sha512').update(payloadBytes).digest('hex'),
@@ -58,7 +58,7 @@ const SawtoothClientFactory = (factoryOptions) => {
           // Batch the transactions and encode a batch header
           const transactions = [transaction]
           const batchHeaderBytes = protobuf.BatchHeader.encode({
-            signerPublicKey: factoryOptions.enclave.publicKey.toString('hex'),
+            signerPublicKey: factoryOptions.publicKey,
             transactionIds: transactions.map((txn) => txn.headerSignature),
           }).finish()
 
