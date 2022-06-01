@@ -123,8 +123,12 @@ const SawtoothClientFactory = (factoryOptions) => {
               headers: { 'Content-Type': 'application/octet-stream' },
               data: batchListBytes
             })
+
+            socket.emit('success')
+
             return res
           } catch (err) {
+            socket.emit('error')
             console.log('error', err)
           }
         }
