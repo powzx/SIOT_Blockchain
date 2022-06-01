@@ -108,8 +108,40 @@ const server = https.createServer(options,
 var io = socketIo(server)
 
 io.on('connection', (socket) => { 
-  console.log('New client request received, initializing...')
+  console.log('New client connected')
 
+  socket.on('request', (data) => {
+    let publicKey = data['publicKey']
+    console.log(`Received request from public key: ${publicKey}`)
+
+    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+
+    walletClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+  
+    walletTransactor = walletClient.newTransactor({
+      familyName: "wallet",
+      familyVersion: "1.0",
+      socket: socket
+    })
+
+    input.submitPayload({
+      "name": data['name'],
+      "value": data['value']
+    }, walletTransactor).then((msg) => {
+      console.log(msg)
+      console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
+    })
+  })
+
+  socket.on('disconnect', () => {
+    console.log("A client disconnected")
+  })
+
+  /*
   // select a random port to submit to
   let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
   let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
@@ -206,6 +238,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Client request completed')
   })
+  */
 })
 
 server.listen(3000, function(req, res) {
