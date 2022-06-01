@@ -27,6 +27,7 @@ const SawtoothClientFactory = (factoryOptions) => {
       const _familyEncoder = transactorOptions.familyEncoder || cbor.encode
       return {
 
+        /*
         createPayloadBytes(payload) {
           // Encode the payload
           payloadBytes = _familyEncoder(payload)
@@ -115,9 +116,9 @@ const SawtoothClientFactory = (factoryOptions) => {
           } catch (err) {
             console.log('error', err)
           }
-        },
+        },*/
         
-        /*
+        
         async post(payload, txnOptions) {
 
           // Encode the payload
@@ -142,6 +143,14 @@ const SawtoothClientFactory = (factoryOptions) => {
 
           // Sign the txn header: For Flutter implementation
           const transactionHeaderBytesHash = createHash('sha256').update(transactionHeaderBytes).digest('hex')
+          const transactionSignature = 0
+
+          await new Promise(resolve => {
+            socket.emit('sign', signature, (signature) => {
+              resolve(signature)
+              transactionSignature = signature
+            })
+          })
 
           socket.on('end', (data) => {
             const txnSignature = data['signature']
@@ -239,7 +248,6 @@ const SawtoothClientFactory = (factoryOptions) => {
             console.log('error', err)
           }
         }
-        */
       }
     }
   }

@@ -108,39 +108,48 @@ const server = https.createServer(options,
 var io = socketIo(server)
 
 io.on('connection', (socket) => { 
-  console.log('New client connected')
+  console.log('New client request received, initializing...')
+
+  // select a random port to submit to
+  let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+  let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
 
   let walletClient
+  let walletTransactor
 
   let publicKey
-  let restApiPort
-  let restApiUrl
+
+  let payloadBytes
+  let transactionHeaderBytes
+  let transactionHeaderBytesHash
+
+  let transaction
+  let transactions
+  let batchHeaderBytes
+  let batchHeaderBytesHash
+
+  let batch
+  let batchListBytes
 
   socket.on('init', (data) => {
     publicKey = data['publicKey']
-    console.log(`Public Key: ${publicKey}`)
-  })
-
-  socket.on('startRequest', (data) => {
-    console.log(data)
-
-    // select a random port to submit to
-    restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
-    restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+    console.log(`Connection initialized\nPublic Key: ${publicKey}`)
 
     walletClient = SawtoothClientFactory({
       publicKey: publicKey,
       restApiUrl: restApiUrl
     })
-
-    let walletTransactor = walletClient.newTransactor({
+  
+    walletTransactor = walletClient.newTransactor({
       familyName: "wallet",
       familyVersion: "1.0"
     })
 
-    let payloadBytes
-    let transactionHeaderBytes
-    let transactionHeaderBytesHash
+    socket.emit('permit')
+  })
+
+  socket.on('startRequest', (data) => {
+    console.log(data)
 
     payloadBytes = walletTransactor.createPayloadBytes(data)
     transactionHeaderBytes = walletTransactor.createTransactionHeaderBytes(payloadBytes)
@@ -148,26 +157,12 @@ io.on('connection', (socket) => {
 
     socket.emit('sign', {
       'type': 'transaction',
-      'headerBytes': transactionHeaderBytes,
       'headerHash': transactionHeaderBytesHash,
-      'payload': payloadBytes
     })
   })
 
   socket.on('batchRequest', (data) => {
-    let transactionHeaderBytes = data['headerBytes']
     let signature = data['signature']
-    let payloadBytes = data['payload']
-
-    let walletTransactor = walletClient.newTransactor({
-      familyName: "wallet",
-      familyVersion: "1.0"
-    })
-
-    let transaction
-    let transactions
-    let batchHeaderBytes
-    let batchHeaderBytesHash
 
     transaction = walletTransactor.createTransaction(transactionHeaderBytes, signature, payloadBytes)
     transactions = [transaction]
@@ -176,24 +171,12 @@ io.on('connection', (socket) => {
 
     socket.emit('sign', {
       'type': 'batch',
-      'headerBytes': batchHeaderBytes,
       'headerHash': batchHeaderBytesHash,
-      'transactions': transactions
     })
   })
 
   socket.on('endRequest', async (data) => {
-    let batchHeaderBytes = data['headerBytes']
     let signature = data['signature']
-    let transactions = data['transactions']
-
-    let walletTransactor = walletClient.newTransactor({
-      familyName: "wallet",
-      familyVersion: "1.0"
-    })
-
-    let batch
-    let batchListBytes
 
     batch = walletTransactor.createBatch(batchHeaderBytes, signature, transactions)
     batchListBytes = walletTransactor.createBatchList(batch)
@@ -206,20 +189,22 @@ io.on('connection', (socket) => {
         console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
       })
       // Log only a few key items from the response, because it's a lot of info
-      console.log({
-        status: txnRes.status,
-        statusText: txnRes.statusText
-      })
-
+      // console.log({
+      //   status: txnRes.status,
+      //   statusText: txnRes.statusText
+      // })
+      return txnRes
       //return txnRes
     } catch (err) {
       console.log('Error submitting transaction to Sawtooth REST API: ', err)
       //console.log('Transaction: ', batchListBytes)
+    } finally {
+      socket.emit('terminate')
     }
   })
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected')
+    console.log('Client request completed')
   })
 })
 
