@@ -5,7 +5,6 @@ const input = {
     },
     submitPayload: async (payload, transactor) => {
       try {
-        // Format the Sawtooth transaction
         const txn = payload
         console.log(`Submitting report transaction to Sawtooth REST API`)
         console.log(txn)

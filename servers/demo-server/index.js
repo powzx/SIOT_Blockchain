@@ -60,80 +60,17 @@ const options = {
 
 const server = https.createServer(options, app)
 
-/*
-const server = https.createServer(options,
-  function(req, res) {
-    if (req.method == "POST") {
-      
-      let body = ''
-      req.on('data', (chunk) => {
-        body += chunk
-      })
-      req.on('end', () => {
-        body = JSON.parse(body)
-        //resolve(body)
-
-        console.log(body)
-
-        // select a random port to submit to
-        let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
-        let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
-
-        let publicKey = body["publicKey"]
-        //let enclave = EnclaveFactory(Buffer.from(publicKey, 'hex'))
-        let walletClient = SawtoothClientFactory({
-          publicKey: publicKey,
-          restApiUrl: restApiUrl
-        })
-        let walletTransactor = walletClient.newTransactor({
-          familyName: "wallet",
-          familyVersion: "1.0"
-        })
-
-        input.submitPayload({
-          "name": body["name"],
-          "value": body["value"]
-        }, walletTransactor).then((msg) => {
-          console.log(msg)
-          console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
-        })
-      })
-    } else {
-      res.end("Undefined request")
-    }
-  }
-)
-*/
-
 var io = socketIo(server)
 
 io.on('connection', (socket) => { 
-  console.log('New client request received, initializing...')
+  console.log('New client connected')
 
-  // select a random port to submit to
-  let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
-  let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+  socket.on('request', async (data) => {
+    let publicKey = data['publicKey']
+    console.log(`Received request from public key: ${publicKey}`)
 
-  let walletClient
-  let walletTransactor
-
-  let publicKey
-
-  let payloadBytes
-  let transactionHeaderBytes
-  let transactionHeaderBytesHash
-
-  let transaction
-  let transactions
-  let batchHeaderBytes
-  let batchHeaderBytesHash
-
-  let batch
-  let batchListBytes
-
-  socket.on('init', (data) => {
-    publicKey = data['publicKey']
-    console.log(`Connection initialized\nPublic Key: ${publicKey}`)
+    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
 
     walletClient = SawtoothClientFactory({
       publicKey: publicKey,
@@ -142,69 +79,21 @@ io.on('connection', (socket) => {
   
     walletTransactor = walletClient.newTransactor({
       familyName: "wallet",
-      familyVersion: "1.0"
+      familyVersion: "1.0",
+      socket: socket
     })
 
-    socket.emit('permit')
-  })
-
-  socket.on('startRequest', (data) => {
-    console.log(data)
-
-    payloadBytes = walletTransactor.createPayloadBytes(data)
-    transactionHeaderBytes = walletTransactor.createTransactionHeaderBytes(payloadBytes)
-    transactionHeaderBytesHash = walletTransactor.createTransactionHeaderBytesHash(transactionHeaderBytes)
-
-    socket.emit('sign', {
-      'type': 'transaction',
-      'headerHash': transactionHeaderBytesHash,
+    input.submitPayload({
+      "name": data['name'],
+      "value": data['value']
+    }, walletTransactor).then((msg) => {
+      console.log(msg)
+      console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
     })
-  })
-
-  socket.on('batchRequest', (data) => {
-    let signature = data['signature']
-
-    transaction = walletTransactor.createTransaction(transactionHeaderBytes, signature, payloadBytes)
-    transactions = [transaction]
-    batchHeaderBytes = walletTransactor.createBatchHeaderBytes(transactions)
-    batchHeaderBytesHash = walletTransactor.createBatchHeaderBytesHash(batchHeaderBytes)
-
-    socket.emit('sign', {
-      'type': 'batch',
-      'headerHash': batchHeaderBytesHash,
-    })
-  })
-
-  socket.on('endRequest', async (data) => {
-    let signature = data['signature']
-
-    batch = walletTransactor.createBatch(batchHeaderBytes, signature, transactions)
-    batchListBytes = walletTransactor.createBatchList(batch)
-
-    try {
-      console.log(`Submitting report transaction to Sawtooth REST API`)
-      // Wait for the response from the validator receiving the transaction
-      const txnRes = await walletTransactor.post(batchListBytes).then((msg) => {
-        console.log(msg)
-        console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
-      })
-      // Log only a few key items from the response, because it's a lot of info
-      // console.log({
-      //   status: txnRes.status,
-      //   statusText: txnRes.statusText
-      // })
-      return txnRes
-      //return txnRes
-    } catch (err) {
-      console.log('Error submitting transaction to Sawtooth REST API: ', err)
-      //console.log('Transaction: ', batchListBytes)
-    } finally {
-      socket.emit('terminate')
-    }
   })
 
   socket.on('disconnect', () => {
-    console.log('Client request completed')
+    console.log("A client disconnected")
   })
 })
 
