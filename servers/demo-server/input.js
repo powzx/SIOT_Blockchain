@@ -4,19 +4,17 @@ const input = {
       else return false
     },
     submitPayload: async (payload, transactor) => {
-      const txn = payload
-      console.log(`Submitting report transaction to Sawtooth REST API`)
-      console.log(txn)
       try {
+        const txn = payload
+        console.log(`Submitting report transaction to Sawtooth REST API`)
+        console.log(txn)
         // Wait for the response from the validator receiving the transaction
         const txnRes = await transactor.post(txn)
         // Log only a few key items from the response, because it's a lot of info
-        if (txnRes != null) {
-          console.log({
-            status: txnRes.status,
-            statusText: txnRes.statusText
-          })
-        }
+        console.log({
+          status: txnRes.status,
+          statusText: txnRes.statusText
+        })
         return txnRes
       } catch (err) {
         console.log('Error submitting transaction to Sawtooth REST API: ', err)
