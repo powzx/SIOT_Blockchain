@@ -46,26 +46,29 @@ const SawtoothClientFactory = (factoryOptions) => {
             ...txnOptions // overwrite above defaults with passed options
           }).finish()
 
-          // Sign the txn header. This signature will also be the txn address
-          //const txnSignature = factoryOptions.enclave.sign(transactionHeaderBytes).toString('hex')
-
           // Sign the txn header: For Flutter implementation
           const transactionHeaderBytesHash = createHash('sha256').update(transactionHeaderBytes).digest()
           let txnSignature = ''
 
-          try {
-            await new Promise(resolve => {
-              socket.emit('sign', {
-                'hash': transactionHeaderBytesHash
-              }, (signature) => {
-                resolve(signature)
-                txnSignature = signature
-              })
+          // Waiting for transaction signature from Flutter app
+          // User has ability to reject the transaction
+          await new Promise((resolve, reject) => {
+            socket.emit('sign', {
+              'type': 'transaction',
+              'hash': transactionHeaderBytesHash,
+              'payload': JSON.stringify(payload)
+            }, (ack) => {
+              if (ack['isApproved']) {
+                resolve(ack)
+                txnSignature = ack['signature']
+                console.log(`Received signature: ${txnSignature}`)
+              } else {
+                reject("Transaction is not approved for signing")
+              }
             })
-            console.log(`Received signature: ${txnSignature}`)
-          } catch (err) {
-            console.log(err)
-          }
+          }).catch(error => {
+            throw error
+          })
 
           // Create the transaction
           const transaction = protobuf.Transaction.create({
@@ -81,27 +84,24 @@ const SawtoothClientFactory = (factoryOptions) => {
             transactionIds: transactions.map((txn) => txn.headerSignature),
           }).finish()
 
-          // Sign the batch header and create the batch
-          //const batchSignature = factoryOptions.enclave.sign(batchHeaderBytes).toString('hex')
-
           // Sign the batch header: For Flutter implementation
           const batchHeaderBytesHash = createHash('sha256').update(batchHeaderBytes).digest()
           let batchSignature = ''
 
-          try {
-            await new Promise(resolve => {
-              socket.emit('sign', {
-                'hash': batchHeaderBytesHash
-              }, (signature) => {
-                resolve(signature)
-                batchSignature = signature
-              })
+          // Waiting for batch signature from the Flutter app
+          // No additional confirmation is needed from the user at this point
+          await new Promise((resolve) => {
+            socket.emit('sign', {
+              'type': 'batch',
+              'hash': batchHeaderBytesHash,
+              'payload': JSON.stringify(payload)
+            }, (signature) => {
+              resolve(signature)
+              batchSignature = signature
+              console.log(`Received signature: ${batchSignature}`)
             })
-            console.log(`Received signature: ${batchSignature}`)
-          } catch (err) {
-            console.log(err)
-          }
-
+          })
+          
           // Create the batch
           const batch = protobuf.Batch.create({
             header: batchHeaderBytes,
