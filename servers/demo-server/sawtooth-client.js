@@ -53,19 +53,21 @@ const SawtoothClientFactory = (factoryOptions) => {
           const transactionHeaderBytesHash = createHash('sha256').update(transactionHeaderBytes).digest()
           let txnSignature = ''
 
-          try {
-            await new Promise(resolve => {
-              socket.emit('sign', {
-                'hash': transactionHeaderBytesHash
-              }, (signature) => {
-                resolve(signature)
-                txnSignature = signature
-              })
+          await new Promise((resolve, reject) => {
+            socket.emit('sign', {
+              'hash': transactionHeaderBytesHash
+            }, (ack) => {
+              if (ack['isApproved']) {
+                resolve(ack)
+                txnSignature = ack['signature']
+                console.log(`Received signature: ${txnSignature}`)
+              } else {
+                reject("Transaction is not approved for signing")
+              }
             })
-            console.log(`Received signature: ${txnSignature}`)
-          } catch (err) {
-            console.log(err)
-          }
+          }).catch(error => {
+            throw error
+          })
 
           // Create the transaction
           const transaction = protobuf.Transaction.create({
@@ -88,20 +90,22 @@ const SawtoothClientFactory = (factoryOptions) => {
           const batchHeaderBytesHash = createHash('sha256').update(batchHeaderBytes).digest()
           let batchSignature = ''
 
-          try {
-            await new Promise(resolve => {
-              socket.emit('sign', {
-                'hash': batchHeaderBytesHash
-              }, (signature) => {
-                resolve(signature)
-                batchSignature = signature
-              })
+          await new Promise((resolve, reject) => {
+            socket.emit('sign', {
+              'hash': batchHeaderBytesHash
+            }, (ack) => {
+              if (ack['isApproved']) {
+                resolve(ack)
+                batchSignature = ack['signature']
+                console.log(`Received signature: ${batchSignature}`)
+              } else {
+                reject('Batch is not approved for signing')
+              }
             })
-            console.log(`Received signature: ${batchSignature}`)
-          } catch (err) {
-            console.log(err)
-          }
-
+          }).catch(error => {
+            throw error
+          })
+          
           // Create the batch
           const batch = protobuf.Batch.create({
             header: batchHeaderBytes,
