@@ -146,14 +146,19 @@ const SawtoothClientFactory = (factoryOptions) => {
           const transactionHeaderBytesHash = createHash('sha256').update(transactionHeaderBytes).digest('hex')
           let txnSignature = ''
 
-          await new Promise(resolve => {
-            socket.emit('sign', {
-              'hash': transactionHeaderBytesHash
-            }, (signature) => {
-              resolve(signature)
-              txnSignature = signature
+          try {
+            await new Promise(resolve => {
+              socket.emit('sign', {
+                'hash': transactionHeaderBytesHash
+              }, (signature) => {
+                resolve(signature)
+                txnSignature = signature
+              })
             })
-          })
+            console.log(`Received signature: ${txnSignature}`)
+          } catch (err) {
+            console.log(err)
+          }
 
           /*
           socket.on('end', (data) => {
@@ -226,14 +231,19 @@ const SawtoothClientFactory = (factoryOptions) => {
           const batchHeaderBytesHash = createHash('sha256').update(batchHeaderBytes).digest('hex')
           let batchSignature = ''
 
-          await new Promise(resolve => {
-            socket.emit('sign', {
-              'hash': batchHeaderBytesHash
-            }, (signature) => {
-              resolve(signature)
-              batchSignature = signature
+          try {
+            await new Promise(resolve => {
+              socket.emit('sign', {
+                'hash': batchHeaderBytesHash
+              }, (signature) => {
+                resolve(signature)
+                batchSignature = signature
+              })
             })
-          })
+            console.log(`Received signature: ${batchSignature}`)
+          } catch (err) {
+            console.log(err)
+          }
 
           // Create the batch
           const batch = protobuf.Batch.create({
