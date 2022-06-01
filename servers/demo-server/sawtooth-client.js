@@ -46,17 +46,17 @@ const SawtoothClientFactory = (factoryOptions) => {
             ...txnOptions // overwrite above defaults with passed options
           }).finish()
 
-          // Sign the txn header. This signature will also be the txn address
-          //const txnSignature = factoryOptions.enclave.sign(transactionHeaderBytes).toString('hex')
-
           // Sign the txn header: For Flutter implementation
           const transactionHeaderBytesHash = createHash('sha256').update(transactionHeaderBytes).digest()
           let txnSignature = ''
 
+          // Waiting for transaction signature from Flutter app
+          // User has ability to reject the transaction
           await new Promise((resolve, reject) => {
             socket.emit('sign', {
               'type': 'transaction',
-              'hash': transactionHeaderBytesHash
+              'hash': transactionHeaderBytesHash,
+              'payload': JSON.stringify(payload)
             }, (ack) => {
               if (ack['isApproved']) {
                 resolve(ack)
@@ -84,17 +84,17 @@ const SawtoothClientFactory = (factoryOptions) => {
             transactionIds: transactions.map((txn) => txn.headerSignature),
           }).finish()
 
-          // Sign the batch header and create the batch
-          //const batchSignature = factoryOptions.enclave.sign(batchHeaderBytes).toString('hex')
-
           // Sign the batch header: For Flutter implementation
           const batchHeaderBytesHash = createHash('sha256').update(batchHeaderBytes).digest()
           let batchSignature = ''
 
+          // Waiting for batch signature from the Flutter app
+          // No additional confirmation is needed from the user at this point
           await new Promise((resolve) => {
             socket.emit('sign', {
               'type': 'batch',
-              'hash': batchHeaderBytesHash
+              'hash': batchHeaderBytesHash,
+              'payload': JSON.stringify(payload)
             }, (signature) => {
               resolve(signature)
               batchSignature = signature
