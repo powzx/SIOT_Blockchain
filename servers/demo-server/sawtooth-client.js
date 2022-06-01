@@ -55,6 +55,7 @@ const SawtoothClientFactory = (factoryOptions) => {
 
           await new Promise((resolve, reject) => {
             socket.emit('sign', {
+              'type': 'transaction',
               'hash': transactionHeaderBytesHash
             }, (ack) => {
               if (ack['isApproved']) {
@@ -90,20 +91,15 @@ const SawtoothClientFactory = (factoryOptions) => {
           const batchHeaderBytesHash = createHash('sha256').update(batchHeaderBytes).digest()
           let batchSignature = ''
 
-          await new Promise((resolve, reject) => {
+          await new Promise((resolve) => {
             socket.emit('sign', {
+              'type': 'batch',
               'hash': batchHeaderBytesHash
-            }, (ack) => {
-              if (ack['isApproved']) {
-                resolve(ack)
-                batchSignature = ack['signature']
-                console.log(`Received signature: ${batchSignature}`)
-              } else {
-                reject('Batch is not approved for signing')
-              }
+            }, (signature) => {
+              resolve(signature)
+              batchSignature = signature
+              console.log(`Received signature: ${batchSignature}`)
             })
-          }).catch(error => {
-            throw error
           })
           
           // Create the batch
