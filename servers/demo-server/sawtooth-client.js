@@ -25,7 +25,8 @@ const SawtoothClientFactory = (factoryOptions) => {
       const _familyNamespace = transactorOptions.familyNamespace || leafHash(transactorOptions.familyName, 6)
       const _familyVersion = transactorOptions.familyVersion || '1.0'
       const _familyEncoder = transactorOptions.familyEncoder || cbor.encode
-      return {
+      const socket = transactorOptions.socket
+      return {  
         async post(payload, txnOptions) {
 
           // Encode the payload
@@ -37,8 +38,8 @@ const SawtoothClientFactory = (factoryOptions) => {
             familyVersion: _familyVersion,
             inputs: [_familyNamespace],
             outputs: [_familyNamespace],
-            signerPublicKey: factoryOptions.enclave.publicKey.toString('hex'),
-            batcherPublicKey: factoryOptions.enclave.publicKey.toString('hex'),
+            signerPublicKey: factoryOptions.publicKey,
+            batcherPublicKey: factoryOptions.publicKey,
             dependencies: [],
             nonce: randomBytes(32).toString('hex'),
             payloadSha512: createHash('sha512').update(payloadBytes).digest('hex'),
@@ -46,7 +47,25 @@ const SawtoothClientFactory = (factoryOptions) => {
           }).finish()
 
           // Sign the txn header. This signature will also be the txn address
-          const txnSignature = factoryOptions.enclave.sign(transactionHeaderBytes).toString('hex')
+          //const txnSignature = factoryOptions.enclave.sign(transactionHeaderBytes).toString('hex')
+
+          // Sign the txn header: For Flutter implementation
+          const transactionHeaderBytesHash = createHash('sha256').update(transactionHeaderBytes).digest()
+          let txnSignature = ''
+
+          try {
+            await new Promise(resolve => {
+              socket.emit('sign', {
+                'hash': transactionHeaderBytesHash
+              }, (signature) => {
+                resolve(signature)
+                txnSignature = signature
+              })
+            })
+            console.log(`Received signature: ${txnSignature}`)
+          } catch (err) {
+            console.log(err)
+          }
 
           // Create the transaction
           const transaction = protobuf.Transaction.create({
@@ -58,12 +77,32 @@ const SawtoothClientFactory = (factoryOptions) => {
           // Batch the transactions and encode a batch header
           const transactions = [transaction]
           const batchHeaderBytes = protobuf.BatchHeader.encode({
-            signerPublicKey: factoryOptions.enclave.publicKey.toString('hex'),
+            signerPublicKey: factoryOptions.publicKey,
             transactionIds: transactions.map((txn) => txn.headerSignature),
           }).finish()
 
           // Sign the batch header and create the batch
-          const batchSignature = factoryOptions.enclave.sign(batchHeaderBytes).toString('hex')
+          //const batchSignature = factoryOptions.enclave.sign(batchHeaderBytes).toString('hex')
+
+          // Sign the batch header: For Flutter implementation
+          const batchHeaderBytesHash = createHash('sha256').update(batchHeaderBytes).digest()
+          let batchSignature = ''
+
+          try {
+            await new Promise(resolve => {
+              socket.emit('sign', {
+                'hash': batchHeaderBytesHash
+              }, (signature) => {
+                resolve(signature)
+                batchSignature = signature
+              })
+            })
+            console.log(`Received signature: ${batchSignature}`)
+          } catch (err) {
+            console.log(err)
+          }
+
+          // Create the batch
           const batch = protobuf.Batch.create({
             header: batchHeaderBytes,
             headerSignature: batchSignature,

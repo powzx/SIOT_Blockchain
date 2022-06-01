@@ -1,8 +1,10 @@
+const express = require('express')
+const socketIo = require('socket.io')
 const https = require('https')
+
 const fs = require("fs")
 const path = require("path")
 
-const { EnclaveFactory } = require('./enclave')
 const input = require('./input')
 const { SawtoothClientFactory } = require('./sawtooth-client')
 
@@ -44,6 +46,8 @@ const walletTransactor = walletClient.newTransactor({
 })
 */
 
+var app = express()
+
 certFile = fs.readFileSync(path.join(__dirname, "server_data", "cert.pem"))
 keyFile = fs.readFileSync(path.join(__dirname, "server_data", "key.pem"))
 passphraseFile = fs.readFileSync(path.join(__dirname, "server_data", "passphrase.txt")).toString()
@@ -54,48 +58,44 @@ const options = {
   passphrase: passphraseFile
 }
 
-const server = https.createServer(options,
-  function(req, res) {
-    if (req.method == "POST") {
-      
-      let body = ''
-      req.on('data', (chunk) => {
-        body += chunk
-      })
-      req.on('end', () => {
-        body = JSON.parse(body)
-        //resolve(body)
+const server = https.createServer(options, app)
 
-        console.log(body)
+var io = socketIo(server)
 
-        // select a random port to submit to
-        let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
-        let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+io.on('connection', (socket) => { 
+  console.log('New client connected')
 
-        let privateKey = body["key"]
-        let enclave = EnclaveFactory(Buffer.from(privateKey, 'hex'))
-        let walletClient = SawtoothClientFactory({
-          enclave: enclave,
-          restApiUrl: restApiUrl
-        })
-        let walletTransactor = walletClient.newTransactor({
-          familyName: "wallet",
-          familyVersion: "1.0"
-        })
+  socket.on('request', async (data) => {
+    let publicKey = data['publicKey']
+    console.log(`Received request from public key: ${publicKey}`)
 
-        input.submitPayload({
-          "name": body["name"],
-          "value": body["value"]
-        }, walletTransactor).then((msg) => {
-          console.log(msg)
-          console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
-        })
-      })
-    } else {
-      res.end("Undefined request")
-    }
-  }
-)
+    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+
+    walletClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+  
+    walletTransactor = walletClient.newTransactor({
+      familyName: "wallet",
+      familyVersion: "1.0",
+      socket: socket
+    })
+
+    input.submitPayload({
+      "name": data['name'],
+      "value": data['value']
+    }, walletTransactor).then((msg) => {
+      console.log(msg)
+      console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
+    })
+  })
+
+  socket.on('disconnect', () => {
+    console.log("A client disconnected")
+  })
+})
 
 server.listen(3000, function(req, res) {
   console.log("This server is listening to port 3000")
@@ -119,7 +119,7 @@ input.getBatchList(walletClient).then((data) => {
 */
 
 /*
-let transactionId = '55a5098c0dce4c3a965180d49d2ccbe410087d57a1d20d3ca4ce372956277afe2d8651ac47928afb7574cd82990e79165e267fd62ed388d087306054799e99dd'
+let transactionId = ''
 input.getTransaction(walletClient, transactionId).then((data) => {
   console.log(data)
 })
