@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
     })
 
     input.submitPayload({
-      "publicKey": publicKey,
+      "key": publicKey,
       "data": user
     }, keyTransactor).then((msg) => {
       console.log(msg)
@@ -98,7 +98,7 @@ io.on('connection', (socket) => {
     })
   })
 
-  socket.on('request', async (data) => {
+  socket.on('post', async (data) => {
 
     let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
     let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
@@ -115,12 +115,41 @@ io.on('connection', (socket) => {
     })
 
     input.submitPayload({
-      "serialNum": data['serialNum'],
+      "key": data['serialNum'],
       "data": data['data']
     }, supplyTransactor).then((msg) => {
       console.log(msg)
       console.log(`Payload successfully submitted to REST API ${restApiPort}`)
     })
+  })
+
+  socket.on('get', async (data) => {
+    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+  
+    supplyClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+
+    supplyTransactor = supplyClient.newTransactor({
+      familyName: "supply",
+      familyVersion: "1.0",
+      socket: socket
+    })
+
+    try {
+      transactions = await supplyClient.get('/transactions')
+      console.log(`Transactions received from REST API ${restApiPort}`)
+
+      for (let i = 0; i < transactions.data.data.length; i++) {
+        if (transactions.data.data[i].header.inputs[0] == supplyTransactor.calculateAddress(data['serialNum'])) {
+          console.log(transactions.data.data[i])
+        }
+      }
+    } catch (err) {
+      console.log(err)
+    }
   })
 
   socket.on('disconnect', () => {

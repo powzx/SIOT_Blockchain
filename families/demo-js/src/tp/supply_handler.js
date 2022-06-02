@@ -16,7 +16,7 @@ class SupplyHandler extends TransactionHandler {
             .then((payload) => {
                 console.log(payload)
 
-                const serialNum = payload.serialNum;
+                const serialNum = payload.key;
                 const data = JSON.stringify(payload.data);
                 let address = NAMESPACE[0] + hash(serialNum).substring(0, 64);
                 let actionFn = applySet;

@@ -26,18 +26,23 @@ const SawtoothClientFactory = (factoryOptions) => {
       const _familyVersion = transactorOptions.familyVersion || '1.0'
       const _familyEncoder = transactorOptions.familyEncoder || cbor.encode
       const socket = transactorOptions.socket
-      return {  
+      return {
+        calculateAddress(key) {
+          return _familyNamespace + leafHash(key, 64)
+        },
+
         async post(payload, txnOptions) {
 
           // Encode the payload
           const payloadBytes = _familyEncoder(payload)
+          const address = this.calculateAddress(payload.key)
 
           // Encode a transaction header
           const transactionHeaderBytes = protobuf.TransactionHeader.encode({
             familyName: transactorOptions.familyName,
             familyVersion: _familyVersion,
-            inputs: [_familyNamespace],
-            outputs: [_familyNamespace],
+            inputs: [address],
+            outputs: [address],
             signerPublicKey: factoryOptions.publicKey,
             batcherPublicKey: factoryOptions.publicKey,
             dependencies: [],
