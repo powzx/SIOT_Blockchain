@@ -65,9 +65,16 @@ var io = socketIo(server)
 io.on('connection', (socket) => { 
   console.log('New client connected')
 
+  let publicKey = ''
+
+  socket.on('init', async (data) => {
+    publicKey = data['publicKey']
+    console.log(`Initializing request from public key: ${publicKey}`)
+
+    socket.emit('initOk')
+  })
+
   socket.on('request', async (data) => {
-    let publicKey = data['publicKey']
-    console.log(`Received request from public key: ${publicKey}`)
 
     let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
     let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
