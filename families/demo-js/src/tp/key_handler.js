@@ -29,7 +29,7 @@ class KeyHandler extends TransactionHandler {
                     if (addresses.length === 0) {
                         throw new InternalError('State error!');
                     }
-                    console.log(`Public Key: ${serialNum} Data: ${data}`);
+                    console.log(`Public Key: ${publicKey} Data: ${data}`);
                 })
             });
     }
