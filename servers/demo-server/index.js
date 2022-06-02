@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
 
   socket.on('init', async (data) => {
     publicKey = data['publicKey']
-    let user = data['user']
+    let user = data['data']
 
     console.log(`Initializing user ${user} from public key: ${publicKey}`)
 
@@ -103,21 +103,21 @@ io.on('connection', (socket) => {
     let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
     let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
 
-    walletClient = SawtoothClientFactory({
+    supplyClient = SawtoothClientFactory({
       publicKey: publicKey,
       restApiUrl: restApiUrl
     })
   
-    walletTransactor = walletClient.newTransactor({
-      familyName: "wallet",
+    supplyTransactor = supplyClient.newTransactor({
+      familyName: "supply",
       familyVersion: "1.0",
       socket: socket
     })
 
     input.submitPayload({
-      "name": data['name'],
-      "value": data['value']
-    }, walletTransactor).then((msg) => {
+      "serialNum": data['serialNum'],
+      "data": data['data']
+    }, supplyTransactor).then((msg) => {
       console.log(msg)
       console.log(`Payload successfully submitted to REST API ${restApiPort}`)
     })
