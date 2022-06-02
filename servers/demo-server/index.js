@@ -1,6 +1,7 @@
 const express = require('express')
 const socketIo = require('socket.io')
 const https = require('https')
+const cbor = require('cbor')
 
 const fs = require("fs")
 const path = require("path")
@@ -138,15 +139,58 @@ io.on('connection', (socket) => {
       socket: socket
     })
 
+    keyClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+
+    keyTransactor = keyClient.newTransactor({
+      familyName: "key",
+      familyVersion: "1.0",
+      socket: socket
+    })
+
     try {
       transactions = await supplyClient.get('/transactions')
       console.log(`Transactions received from REST API ${restApiPort}`)
 
+      let packet = []
+
       for (let i = 0; i < transactions.data.data.length; i++) {
         if (transactions.data.data[i].header.inputs[0] == supplyTransactor.calculateAddress(data['serialNum'])) {
-          console.log(transactions.data.data[i])
+
+          let authorKey = transactions.data.data[i].header.signer_public_key
+          let payload = transactions.data.data[i].payload
+          let decodedPayload = Buffer.from(payload, 'base64')
+          let payloadJson = cbor.decode(decodedPayload)
+
+          console.log(payloadJson)
+
+          try {
+            let keyAddress = keyTransactor.calculateAddress(authorKey)
+            let keyState = await keyClient.get(`/state/${keyAddress}`)
+            let keyStatePayload = keyState.data.data
+
+            let decodedKeyStatePayload = Buffer.from(keyStatePayload, 'base64')
+            let keyStatePayloadJson = cbor.decode(decodedKeyStatePayload)
+
+            console.log(keyStatePayloadJson)
+          } catch (err) {
+            console.log(err)
+          }
+
+          /*
+          packet.push({
+            'authorName': ,
+            'authorKey': ,
+            'payload': payloadJson
+          })
+          */
         }
       }
+
+      //console.log(packet)
+      //socket.emit('result', packet)
     } catch (err) {
       console.log(err)
     }
