@@ -150,6 +150,7 @@ io.on('connection', (socket) => {
       socket: socket
     })
 
+    // get list of all transactions
     try {
       transactions = await supplyClient.get('/transactions')
       console.log(`Transactions received from REST API ${restApiPort}`)
@@ -157,6 +158,7 @@ io.on('connection', (socket) => {
       let packet = []
 
       for (let i = 0; i < transactions.data.data.length; i++) {
+        // filter transactions according to serial number
         if (transactions.data.data[i].header.inputs[0] == supplyTransactor.calculateAddress(data['serialNum'])) {
 
           let authorKey = transactions.data.data[i].header.signer_public_key
@@ -166,6 +168,7 @@ io.on('connection', (socket) => {
 
           console.log(payloadJson)
 
+          // get public key info
           try {
             let keyAddress = keyTransactor.calculateAddress(authorKey)
             let keyState = await keyClient.get(`/state/${keyAddress}`)
@@ -175,22 +178,22 @@ io.on('connection', (socket) => {
             let keyStatePayloadJson = cbor.decode(decodedKeyStatePayload)
 
             console.log(keyStatePayloadJson)
+
+            packet.push({
+              'authorKey': authorKey,
+              'authorName': keyStatePayloadJson[`${authorKey}`],
+              'transaction': JSON.stringify(payloadJson)
+            })
           } catch (err) {
             console.log(err)
           }
-
-          /*
-          packet.push({
-            'authorName': ,
-            'authorKey': ,
-            'payload': payloadJson
-          })
-          */
         }
       }
 
-      //console.log(packet)
-      //socket.emit('result', packet)
+      console.log(`Sending packet to client:`)
+      console.log(packet)
+
+      socket.emit('result', packet)
     } catch (err) {
       console.log(err)
     }
