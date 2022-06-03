@@ -65,6 +65,7 @@ var io = socketIo(server)
 
 io.on('connection', (socket) => { 
   console.log('New client connected')
+  console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
 
   let publicKey = ''
 
@@ -204,6 +205,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log("A client disconnected")
+    console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
   })
 })
 
