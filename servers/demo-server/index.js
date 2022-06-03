@@ -1,6 +1,7 @@
 const express = require('express')
 const socketIo = require('socket.io')
 const https = require('https')
+const cbor = require('cbor')
 
 const fs = require("fs")
 const path = require("path")
@@ -64,36 +65,147 @@ var io = socketIo(server)
 
 io.on('connection', (socket) => { 
   console.log('New client connected')
+  console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
 
-  socket.on('request', async (data) => {
-    let publicKey = data['publicKey']
-    console.log(`Received request from public key: ${publicKey}`)
+  let publicKey = ''
+
+  socket.on('init', async (data) => {
+    publicKey = data['publicKey']
+    let user = data['data']
+
+    console.log(`Initializing user ${user} from public key: ${publicKey}`)
 
     let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
     let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
 
-    walletClient = SawtoothClientFactory({
+    keyClient = SawtoothClientFactory({
       publicKey: publicKey,
       restApiUrl: restApiUrl
     })
-  
-    walletTransactor = walletClient.newTransactor({
-      familyName: "wallet",
+
+    keyTransactor = keyClient.newTransactor({
+      familyName: "key",
       familyVersion: "1.0",
       socket: socket
     })
 
     input.submitPayload({
-      "name": data['name'],
-      "value": data['value']
-    }, walletTransactor).then((msg) => {
+      "key": publicKey,
+      "data": user
+    }, keyTransactor).then((msg) => {
       console.log(msg)
-      console.log(`Payload successfully submitted to Rest API ${restApiPort}`)
+      console.log(`User successfully initialized via REST API ${restApiPort}`)
+
+      socket.emit('initOk')
     })
+  })
+
+  socket.on('post', async (data) => {
+
+    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+
+    supplyClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+  
+    supplyTransactor = supplyClient.newTransactor({
+      familyName: "supply",
+      familyVersion: "1.0",
+      socket: socket
+    })
+
+    input.submitPayload({
+      "key": data['serialNum'],
+      "data": data['data']
+    }, supplyTransactor).then((msg) => {
+      console.log(msg)
+      console.log(`Payload successfully submitted to REST API ${restApiPort}`)
+    })
+  })
+
+  socket.on('get', async (data) => {
+    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
+    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
+  
+    supplyClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+
+    supplyTransactor = supplyClient.newTransactor({
+      familyName: "supply",
+      familyVersion: "1.0",
+      socket: socket
+    })
+
+    keyClient = SawtoothClientFactory({
+      publicKey: publicKey,
+      restApiUrl: restApiUrl
+    })
+
+    keyTransactor = keyClient.newTransactor({
+      familyName: "key",
+      familyVersion: "1.0",
+      socket: socket
+    })
+
+    // get list of all transactions
+    try {
+      transactions = await supplyClient.get('/transactions')
+      console.log(`Transactions received from REST API ${restApiPort}`)
+
+      let packet = {
+        'serialNum': data['serialNum'],
+        'transactions': []
+      }
+
+      for (let i = 0; i < transactions.data.data.length; i++) {
+        // filter transactions according to serial number
+        if (transactions.data.data[i].header.inputs[0] == supplyTransactor.calculateAddress(data['serialNum'])) {
+
+          let authorKey = transactions.data.data[i].header.signer_public_key
+          let payload = transactions.data.data[i].payload
+          let decodedPayload = Buffer.from(payload, 'base64')
+          let payloadJson = cbor.decode(decodedPayload)
+
+          console.log(payloadJson)
+
+          // get public key info
+          try {
+            let keyAddress = keyTransactor.calculateAddress(authorKey)
+            let keyState = await keyClient.get(`/state/${keyAddress}`)
+            let keyStatePayload = keyState.data.data
+
+            let decodedKeyStatePayload = Buffer.from(keyStatePayload, 'base64')
+            let keyStatePayloadJson = cbor.decode(decodedKeyStatePayload)
+
+            console.log(keyStatePayloadJson)
+
+            packet.transactions.push({
+              'authorKey': authorKey,
+              'authorName': keyStatePayloadJson[`${authorKey}`],
+              'transaction': payloadJson
+            })
+          } catch (err) {
+            console.log(err)
+          }
+        }
+      }
+
+      console.log(`Sending packet to client:`)
+      console.log(JSON.stringify(packet))
+
+      socket.emit('result', JSON.stringify(packet))
+    } catch (err) {
+      console.log(err)
+    }
   })
 
   socket.on('disconnect', () => {
     console.log("A client disconnected")
+    console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
   })
 })
 

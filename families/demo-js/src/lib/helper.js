@@ -32,7 +32,7 @@ const applySet = (context, address, name, value) => (possibleAddressValues) => {
         let stateName = stateValue[name];
         if (stateName) {
             throw new InvalidTransaction(
-                `Wallet name is already in state -> Name: ${name} Value: ${stateName}`
+                `Identifier is already in state -> Identifier: ${name} Value: ${stateName}`
             );
         }
     }

@@ -16,8 +16,8 @@ class WalletHandler extends TransactionHandler {
             .then((payload) => {
                 console.log(payload)
 
-                const name = payload.name;
-                const value = JSON.stringify(payload.value);
+                const name = payload.key;
+                const value = JSON.stringify(payload.data);
                 let address = NAMESPACE[0] + hash(name).substring(0, 64);
                 let actionFn = applySet;
                 let getPromise = context.getState([address]);
