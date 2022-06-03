@@ -185,7 +185,7 @@ io.on('connection', (socket) => {
             packet.transactions.push({
               'authorKey': authorKey,
               'authorName': keyStatePayloadJson[`${authorKey}`],
-              'transaction': JSON.stringify(payloadJson)
+              'transaction': payloadJson
             })
           } catch (err) {
             console.log(err)
@@ -194,7 +194,7 @@ io.on('connection', (socket) => {
       }
 
       console.log(`Sending packet to client:`)
-      console.log(packet)
+      console.log(JSON.stringify(packet))
 
       socket.emit('result', JSON.stringify(packet))
     } catch (err) {
