@@ -155,7 +155,10 @@ io.on('connection', (socket) => {
       transactions = await supplyClient.get('/transactions')
       console.log(`Transactions received from REST API ${restApiPort}`)
 
-      let packet = []
+      let packet = {
+        'serialNum': data['serialNum'],
+        'transactions': []
+      }
 
       for (let i = 0; i < transactions.data.data.length; i++) {
         // filter transactions according to serial number
@@ -179,7 +182,7 @@ io.on('connection', (socket) => {
 
             console.log(keyStatePayloadJson)
 
-            packet.push({
+            packet.transactions.push({
               'authorKey': authorKey,
               'authorName': keyStatePayloadJson[`${authorKey}`],
               'transaction': JSON.stringify(payloadJson)
@@ -193,7 +196,7 @@ io.on('connection', (socket) => {
       console.log(`Sending packet to client:`)
       console.log(packet)
 
-      socket.emit('result', packet)
+      socket.emit('result', JSON.stringify(packet))
     } catch (err) {
       console.log(err)
     }
