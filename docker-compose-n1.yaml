@@ -791,17 +791,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-0.priv ]; then
-          cp /pbft-shared/validators/validator-0.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-0.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-0.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-0.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-0.priv
-          if [ ! -e config-genesis.batch ]; then
-            sawset genesis -k /etc/sawtooth/keys/validator.priv -o config-genesis.batch
-          fi &&
+          sawset genesis -k /root/.sawtooth/keys/my_key.priv -o config-genesis.batch
           while [[ ! -f /pbft-shared/validators/validator-1.pub || \
                   ! -f /pbft-shared/validators/validator-2.pub || \
                   ! -f /pbft-shared/validators/validator-3.pub || \
@@ -823,21 +821,14 @@ services:
                   ! -f /pbft-shared/validators/validator-19.pub ]];
           do sleep 1; done
           echo sawtooth.consensus.pbft.members=\\['\"'$$(cat /pbft-shared/validators/validator-0.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-1.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-2.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-3.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-4.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-5.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-6.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-7.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-8.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-9.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-10.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-11.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-12.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-13.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-14.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-15.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-16.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-17.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-18.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-19.pub)'\"'\\] &&
-          if [ ! -e config.batch ]; then
           sawset proposal create \
-              -k /etc/sawtooth/keys/validator.priv \
+              -k /root/.sawtooth/keys/my_key.priv \
               sawtooth.consensus.algorithm.name=pbft \
               sawtooth.consensus.algorithm.version=1.0 \
               sawtooth.consensus.pbft.members=\\['\"'$$(cat /pbft-shared/validators/validator-0.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-1.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-2.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-3.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-4.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-5.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-6.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-7.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-8.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-9.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-10.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-11.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-12.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-13.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-14.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-15.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-16.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-17.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-18.pub)'\"','\"'$$(cat /pbft-shared/validators/validator-19.pub)'\"'\\] \
               sawtooth.publisher.max_batches_per_block=1200 \
               -o config.batch
-          fi &&
-          if [ ! -e /var/lib/sawtooth/genesis.batch ]; then
-            sawadm genesis config-genesis.batch config.batch
-          fi &&
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
+          sawadm genesis config-genesis.batch config.batch
         fi &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8800 \
@@ -864,17 +855,14 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-1.priv ]; then
-          cp /pbft-shared/validators/validator-1.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-1.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-1.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-1.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-1.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
         fi &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8801 \
@@ -902,18 +890,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-2.priv ]; then
-          cp /pbft-shared/validators/validator-2.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-2.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-2.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-2.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-2.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8802 \
           --bind component:tcp://eth0:4004 \
@@ -941,18 +926,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-3.priv ]; then
-         cp /pbft-shared/validators/validator-3.pub /etc/sawtooth/keys/validator.pub
-         cp /pbft-shared/validators/validator-3.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-3.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-3.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-3.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&        
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8803 \
           --bind component:tcp://eth0:4004 \
@@ -981,18 +963,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-4.priv ]; then
-          cp /pbft-shared/validators/validator-4.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-4.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-4.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-4.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-4.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&        
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8804 \
           --bind component:tcp://eth0:4004 \
@@ -1023,18 +1002,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-5.priv ]; then
-          cp /pbft-shared/validators/validator-5.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-5.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-5.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-5.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-5.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8805 \
           --bind component:tcp://eth0:4004 \
@@ -1066,18 +1042,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-6.priv ]; then
-          cp /pbft-shared/validators/validator-6.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-6.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-6.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-6.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-6.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8806 \
           --bind component:tcp://eth0:4004 \
@@ -1110,18 +1083,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-7.priv ]; then
-          cp /pbft-shared/validators/validator-7.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-7.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-7.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-7.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-7.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8807 \
           --bind component:tcp://eth0:4004 \
@@ -1155,18 +1125,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-8.priv ]; then
-          cp /pbft-shared/validators/validator-8.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-8.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-8.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-8.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-8.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8808 \
           --bind component:tcp://eth0:4004 \
@@ -1201,18 +1168,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-9.priv ]; then
-          cp /pbft-shared/validators/validator-9.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-9.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-9.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-9.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-9.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8809 \
           --bind component:tcp://eth0:4004 \
@@ -1248,18 +1212,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-10.priv ]; then
-          cp /pbft-shared/validators/validator-10.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-10.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-10.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-10.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-10.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8810 \
           --bind component:tcp://eth0:4004 \
@@ -1296,18 +1257,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-11.priv ]; then
-          cp /pbft-shared/validators/validator-11.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-11.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-11.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-11.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-11.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8811 \
           --bind component:tcp://eth0:4004 \
@@ -1345,18 +1303,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-12.priv ]; then
-          cp /pbft-shared/validators/validator-12.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-12.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-12.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-12.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-12.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&        
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8812 \
           --bind component:tcp://eth0:4004 \
@@ -1395,18 +1350,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-13.priv ]; then
-          cp /pbft-shared/validators/validator-13.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-13.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-13.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-13.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-13.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8813 \
           --bind component:tcp://eth0:4004 \
@@ -1446,18 +1398,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-14.priv ]; then
-          cp /pbft-shared/validators/validator-14.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-14.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-14.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-14.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-14.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&        
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8814 \
           --bind component:tcp://eth0:4004 \
@@ -1498,18 +1447,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-15.priv ]; then
-          cp /pbft-shared/validators/validator-15.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-15.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-15.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-15.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-15.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&        
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8815 \
           --bind component:tcp://eth0:4004 \
@@ -1551,18 +1497,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-16.priv ]; then
-          cp /pbft-shared/validators/validator-16.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-16.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-16.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-16.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-16.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8816 \
           --bind component:tcp://eth0:4004 \
@@ -1605,18 +1548,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-17.priv ]; then
-          cp /pbft-shared/validators/validator-17.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-17.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-17.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-17.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-17.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&       
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8817 \
           --bind component:tcp://eth0:4004 \
@@ -1660,18 +1600,15 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-18.priv ]; then
-          cp /pbft-shared/validators/validator-18.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-18.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-18.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-18.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-18.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
-        fi &&
+        fi &&        
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8818 \
           --bind component:tcp://eth0:4004 \
@@ -1716,17 +1653,14 @@ services:
       - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
-        if [ -e /pbft-shared/validators/validator-19.priv ]; then
-          cp /pbft-shared/validators/validator-19.pub /etc/sawtooth/keys/validator.pub
-          cp /pbft-shared/validators/validator-19.priv /etc/sawtooth/keys/validator.priv
-        else
+        if [ ! -f /pbft-shared/validators/validator-19.priv ]; then
           sawadm keygen
+          if [ ! -f /root/.sawtooth/keys/my_key.priv ]; then
+            sawtooth keygen my_key
+          fi
           mkdir -p /pbft-shared/validators || true
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-19.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-19.priv
-          if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-            sawtooth keygen my_key
-          fi
         fi &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8819 \
