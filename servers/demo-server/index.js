@@ -51,12 +51,11 @@ var app = express()
 
 certFile = fs.readFileSync(path.join(__dirname, "server_data", "cert.pem"))
 keyFile = fs.readFileSync(path.join(__dirname, "server_data", "key.pem"))
-passphraseFile = fs.readFileSync(path.join(__dirname, "server_data", "passphrase.txt")).toString()
+//passphraseFile = fs.readFileSync(path.join(__dirname, "server_data", "passphrase.txt")).toString()
 
 const options = {
   key: keyFile,
-  cert: certFile,
-  passphrase: passphraseFile
+  cert: certFile
 }
 
 const server = https.createServer(options, app)
