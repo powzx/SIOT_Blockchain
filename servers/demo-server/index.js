@@ -51,13 +51,13 @@ const options = {
 var client = mqtt.connect(`${uri}`, options)
 
 client.on('connect', function() {
-  client.subscribe('/topic/hello')
+  client.subscribe('/topic/#')
 
   console.log('This server is successfully connected to the MQTT broker')
 })
 
 client.on('message', async function(topic, message) {
-  console.log(`Received a message of topic ${topic} and message ${message}`)
+  console.log(`Received a message of topic ${topic}`)
 
   switch (topic) {
     case '/topic/hello':

@@ -25,7 +25,7 @@ const SawtoothClientFactory = (factoryOptions) => {
       const _familyNamespace = transactorOptions.familyNamespace || leafHash(transactorOptions.familyName, 6)
       const _familyVersion = transactorOptions.familyVersion || '1.0'
       const _familyEncoder = transactorOptions.familyEncoder || cbor.encode
-      const socket = transactorOptions.socket
+      //const client = transactorOptions.client
       return {
         calculateAddress(key) {
           return _familyNamespace + leafHash(key, 64)
@@ -90,7 +90,7 @@ const SawtoothClientFactory = (factoryOptions) => {
           }).finish()
         },
 
-        async postToBlockchain(batchListBytes) {
+        async postToRest(batchListBytes) {
           try {
             const res = await axios({
               method: 'post',
