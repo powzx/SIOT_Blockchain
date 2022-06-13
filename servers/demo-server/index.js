@@ -1,6 +1,7 @@
 const express = require('express')
 const socketIo = require('socket.io')
 const https = require('https')
+const mqtt = require('mqtt')
 const cbor = require('cbor')
 
 const fs = require("fs")
@@ -33,6 +34,8 @@ const ports = {
   19: "8027"
 }
 
+const ip = '192.168.11.109'
+
 /*
 const enclave = EnclaveFactory(Buffer.from(env.privateKey, 'hex'))
 
@@ -47,6 +50,25 @@ const walletTransactor = walletClient.newTransactor({
 })
 */
 
+var caFile = fs.readFileSync(path.join(__dirname, "mqtt", "ca.crt"))
+var certFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.crt"))
+var keyFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.key"))
+
+const options = {
+  rejectUnauthorized: false,
+  connectTimeout: 5000,
+  ca: [ caFile ],
+  cert: certFile,
+  key: keyFile
+}
+
+var client = mqtt.connect(`mqtts://${ip}`, options)
+
+client.on('connect', function() {
+  console.log('Server successfully connected to MQTT broker')
+})
+
+/*
 var app = express()
 
 certFile = fs.readFileSync(path.join(__dirname, "server_data", "cert.pem"))
@@ -211,6 +233,7 @@ io.on('connection', (socket) => {
 server.listen(3000, function(req, res) {
   console.log("This server is listening to port 3000")
 })
+*/
 
 // Test scripts for client
 
