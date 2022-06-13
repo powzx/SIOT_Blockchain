@@ -34,21 +34,7 @@ const ports = {
   19: "8027"
 }
 
-const ip = '192.168.11.109'
-
-/*
-const enclave = EnclaveFactory(Buffer.from(env.privateKey, 'hex'))
-
-const walletClient = SawtoothClientFactory({
-  enclave: enclave,
-  restApiUrl: env.restApiUrl
-})
-
-const walletTransactor = walletClient.newTransactor({
-  familyName: "wallet",
-  familyVersion: "1.0"
-})
-*/
+const uri = 'mqtts://192.168.11.109:8883'
 
 var caFile = fs.readFileSync(path.join(__dirname, "mqtt", "ca.crt"))
 var certFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.crt"))
@@ -62,10 +48,26 @@ const options = {
   key: keyFile
 }
 
-var client = mqtt.connect(`mqtts://${ip}`, options)
+var client = mqtt.connect(`${uri}`, options)
 
 client.on('connect', function() {
-  console.log('Server successfully connected to MQTT broker')
+  client.subscribe('/topic/hello')
+
+  console.log('This server is successfully connected to the MQTT broker')
+})
+
+client.on('message', async function(topic, message) {
+  console.log(`Received a message of topic ${topic} and message ${message}`)
+
+  switch (topic) {
+    case '/topic/hello':
+      console.log(message.toString())
+      client.publish('/topic/bye', 'bye esp')
+      break
+    default:
+      console.log('Default message')
+      break
+  }
 })
 
 /*
@@ -232,35 +234,5 @@ io.on('connection', (socket) => {
 
 server.listen(3000, function(req, res) {
   console.log("This server is listening to port 3000")
-})
-*/
-
-// Test scripts for client
-
-/*
-input.submitPayload({
-  "name": "johndo",
-  "value": 10000
-}, walletTransactor).then((ewa) => {
-  console.log(ewa)
-})
-*/
-
-/*
-input.getBatchList(walletClient).then((data) => {
-  console.log(data)
-})
-*/
-
-/*
-let transactionId = ''
-input.getTransaction(walletClient, transactionId).then((data) => {
-  console.log(data)
-})
-*/
-
-/*
-input.getState(walletClient).then((data) => {
-  console.log(data['data']['data'])
 })
 */

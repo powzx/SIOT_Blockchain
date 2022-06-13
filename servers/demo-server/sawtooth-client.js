@@ -31,6 +31,85 @@ const SawtoothClientFactory = (factoryOptions) => {
           return _familyNamespace + leafHash(key, 64)
         },
 
+        createPayloadBytes(payload) {
+          return _familyEncoder(payload)
+        },
+
+        createTransactionHeaderBytes(payload, payloadBytes) {
+          let address = this.calculateAddress(payload.key)
+          return protobuf.TransactionHeader.encode({
+            familyName: transactorOptions.familyName,
+            familyVersion: _familyVersion,
+            inputs: [address],
+            outputs: [address],
+            signerPublicKey: factoryOptions.publicKey,
+            batcherPublicKey: factoryOptions.publicKey,
+            dependencies: [],
+            nonce: randomBytes(32).toString('hex'),
+            payloadSha512: createHash('sha512').update(payloadBytes).digest('hex'),
+            ...txnOptions // overwrite above defaults with passed options
+          }).finish()
+        },
+
+        createTransactionHeaderBytesHash(transactionHeaderBytes) {
+          return createHash('sha256').update(transactionHeaderBytes).digest()
+        },
+
+        createTransactions(transactionHeaderBytes, txnSignature, payloadBytes) {
+          let transaction = protobuf.Transaction.create({
+            header: transactionHeaderBytes,
+            headerSignature: txnSignature,
+            payload: payloadBytes
+          })
+
+          return [transaction]
+        },
+
+        createBatchHeaderBytes(transactions) {
+          return protobuf.BatchHeader.encode({
+            signerPublicKey: factoryOptions.publicKey,
+            transactionIds: transactions.map((txn) => txn.headerSignature),
+          }).finish()
+        },
+
+        createBatchHeaderBytesHash(batchHeaderBytes) {
+          return createHash('sha256').update(batchHeaderBytes).digest()
+        },
+
+        createBatch(batchHeaderBytes, batchSignature, transactions) {
+          return protobuf.Batch.create({
+            header: batchHeaderBytes,
+            headerSignature: batchSignature,
+            transactions: transactions
+          })
+        },
+
+        createBatchListBytes(batch) {
+          return protobuf.BatchList.encode({
+            batches: [batch]
+          }).finish()
+        },
+
+        async postToBlockchain(batchListBytes) {
+          try {
+            const res = await axios({
+              method: 'post',
+              baseURL: factoryOptions.restApiUrl,
+              url: '/batches',
+              headers: { 'Content-Type': 'application/octet-stream' },
+              data: batchListBytes
+            })
+
+            //socket.emit('success')
+
+            return res
+          } catch (err) {
+            //socket.emit('error')
+            console.log('error', err)
+          }
+        },
+
+        /*
         async post(payload, txnOptions) {
 
           // Encode the payload
@@ -137,6 +216,7 @@ const SawtoothClientFactory = (factoryOptions) => {
             console.log('error', err)
           }
         }
+        */
       }
     }
   }
