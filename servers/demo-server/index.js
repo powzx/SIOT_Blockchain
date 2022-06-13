@@ -9,6 +9,7 @@ const path = require("path")
 
 const input = require('./input')
 const { SawtoothClientFactory } = require('./sawtooth-client')
+const { Packager } = require('./packager')
 
 const NUM_OF_PORTS = 20
 const ports = {
@@ -53,19 +54,28 @@ var client = mqtt.connect(`${uri}`, options)
 client.on('connect', function() {
   client.subscribe('/topic/#')
 
-  console.log('This server is successfully connected to the MQTT broker')
+  console.log('The dispatcher is successfully connected to the MQTT broker')
 })
 
 client.on('message', async function(topic, message) {
   console.log(`Received a message of topic ${topic}`)
 
+  let msgJson = JSON.parse(message.toString())
+  let packager
+
   switch (topic) {
-    case '/topic/hello':
-      console.log(message.toString())
-      client.publish('/topic/bye', 'bye esp')
+    case '/topic/dispatch/init':
+      packager = new Packager('key', msgJson, client)
+      packager.packageTransaction()
+      break
+    case '/topic/dispatch/post':
+      packager = new Packager('supply', msgJson, client)
+      packager.packageTransaction()
+      break
+    case '/topic/dispatch/get':
       break
     default:
-      console.log('Default message')
+      console.log(`No specified handler for the topic ${topic}`)
       break
   }
 })

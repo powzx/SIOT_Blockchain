@@ -1,4 +1,19 @@
+const mqtt = require('mqtt')
 const { SawtoothClientFactory } = require('./sawtooth-client')
+
+const uri = 'mqtts://192.168.11.109:8883'
+
+var caFile = fs.readFileSync(path.join(__dirname, "mqtt", "ca.crt"))
+var certFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.crt"))
+var keyFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.key"))
+
+const options = {
+  rejectUnauthorized: false,
+  connectTimeout: 5000,
+  ca: [ caFile ],
+  cert: certFile,
+  key: keyFile
+}
 
 const NUM_OF_PORTS = 20
 const ports = {
@@ -25,21 +40,40 @@ const ports = {
 }
 
 class Packager {
-    constructor(family, payload, mqttClient) {
+    constructor(family, payload) {
         this.payload = payload
-        this.mqttClient = mqttClient
+        this.publicKey = payload['publicKey']
+        this.mqttClient = mqtt.connect(`${uri}`, options)
 
         this.restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
         this.restApiUrl = `http://localhost:${ports[`${this.restApiPort}`]}`
 
         this.client = SawtoothClientFactory({
-            publicKey: this.payload['publicKey'],
+            publicKey: this.publicKey,
             restApiUrl: this.restApiUrl
         })
 
         this.transactor = this.client.newTransactor({
             familyName: family,
             familyVersion: "1.0",
+        })
+
+        this.mqttClient.on('connect', function() {
+            console.log(`The server for ${this.publicKey} is successfully connected to the MQTT broker`)
+        })
+
+        this.mqttClient.on('message', function(topic, message) {
+            switch (topic) {
+                case `/topic/${this.publicKey}/txnSig`:
+                    packageBatch()
+                    break
+                case `/topic/${this.publicKey}/batchSig`:
+                    postToRest()
+                    break
+                default:
+                    console.log(`No specified handler for the topic ${topic}`)
+                    break
+            }
         })
     }
 
@@ -48,7 +82,8 @@ class Packager {
         this.transactionHeaderBytes = this.transactor.createTransactionHeaderBytes(this.payload, this.payloadBytes)
         this.transactionHeaderBytesHash = this.transactor.createTransactionHeaderBytesHash(this.transactionHeaderBytes)
 
-        this.mqttClient.publish(`/topic/txnHash/${this.payload['publicKey']}`, this.transactionHeaderBytesHash)
+        this.mqttClient.subscribe(`/topic/${this.publicKey}/txnSig`)
+        this.mqttClient.publish(`/topic/${this.publicKey}/txnHash`, this.transactionHeaderBytesHash)
     }
 
     packageBatch() {
@@ -56,7 +91,8 @@ class Packager {
         this.batchHeaderBytes = this.transactor.createBatchHeaderBytes(this.transactions)
         this.batchHeaderBytesHash = this.transactor.createBatchHeaderBytesHash(this.batchHeaderBytes)
 
-        this.mqttClient.publish(`/topic/batchHash/${this.payload['publicKey']}`, this.batchHeaderBytesHash)
+        this.mqttClient.subscribe(`/topic/${this.publicKey}/batchSig`)
+        this.mqttClient.publish(`/topic/${this.publicKey}/batchHash`, this.batchHeaderBytesHash)
     }
 
     async postToRest() {
@@ -68,16 +104,20 @@ class Packager {
 
         try {
             const txnRes = await this.transactor.postToRest(this.batchListBytes)
-
             console.log({
                 status: txnRes.status,
                 statusText: txnRes.statusText
             })
-
             return txnRes
         } catch (err) {
             console.log('Error submitting transaction to Sawtooth REST API: ', err)
             console.log('Transaction: ', this.payload)
+        } finally {
+            this.mqttClient.end()
         }
     }
+}
+
+module.exports = {
+    Packager
 }
