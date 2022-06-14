@@ -49,27 +49,32 @@ const options = {
   key: keyFile
 }
 
-var client = mqtt.connect(`${uri}`, options)
+const server = mqtt.connect(`${uri}`, options)
 
-client.on('connect', function() {
-  client.subscribe('/topic/#')
+server.on('connect', function() {
+  server.subscribe('/topic/dispatch/+')
 
-  console.log('The dispatcher is successfully connected to the MQTT broker')
+  console.log('Server is successfully connected to the MQTT broker')
 })
 
-client.on('message', async function(topic, message) {
+server.on('message', async function(topic, message) {
   console.log(`Received a message of topic ${topic}`)
-
   let msgJson = JSON.parse(message.toString())
+  console.log(msgJson)
+
   let packager
 
   switch (topic) {
     case '/topic/dispatch/init':
-      packager = new Packager('key', msgJson, client)
+      console.log(`Initializing user ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
+
+      packager = new Packager('key', msgJson)
       packager.packageTransaction()
       break
     case '/topic/dispatch/post':
-      packager = new Packager('supply', msgJson, client)
+      console.log(`Processing new POST request...`)
+
+      packager = new Packager('supply', msgJson)
       packager.packageTransaction()
       break
     case '/topic/dispatch/get':
@@ -81,35 +86,10 @@ client.on('message', async function(topic, message) {
 })
 
 /*
-var app = express()
-
-certFile = fs.readFileSync(path.join(__dirname, "server_data", "cert.pem"))
-keyFile = fs.readFileSync(path.join(__dirname, "server_data", "key.pem"))
-//passphraseFile = fs.readFileSync(path.join(__dirname, "server_data", "passphrase.txt")).toString()
-
-const options = {
-  key: keyFile,
-  cert: certFile
-}
-
-const server = https.createServer(options, app)
-
-var io = socketIo(server)
 
 io.on('connection', (socket) => { 
-  console.log('New client connected')
-  console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
-
-  let publicKey = ''
 
   socket.on('init', async (data) => {
-    publicKey = data['publicKey']
-    let user = data['data']
-
-    console.log(`Initializing user ${user} from public key: ${publicKey}`)
-
-    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
-    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
 
     keyClient = SawtoothClientFactory({
       publicKey: publicKey,
@@ -235,14 +215,5 @@ io.on('connection', (socket) => {
       console.log(err)
     }
   })
-
-  socket.on('disconnect', () => {
-    console.log("A client disconnected")
-    console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
-  })
-})
-
-server.listen(3000, function(req, res) {
-  console.log("This server is listening to port 3000")
 })
 */

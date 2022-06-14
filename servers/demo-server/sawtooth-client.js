@@ -35,8 +35,7 @@ const SawtoothClientFactory = (factoryOptions) => {
           return _familyEncoder(payload)
         },
 
-        createTransactionHeaderBytes(payload, payloadBytes) {
-          let address = this.calculateAddress(payload.key)
+        createTransactionHeaderBytes(address, payloadBytes) {
           return protobuf.TransactionHeader.encode({
             familyName: transactorOptions.familyName,
             familyVersion: _familyVersion,
@@ -47,12 +46,12 @@ const SawtoothClientFactory = (factoryOptions) => {
             dependencies: [],
             nonce: randomBytes(32).toString('hex'),
             payloadSha512: createHash('sha512').update(payloadBytes).digest('hex'),
-            ...txnOptions // overwrite above defaults with passed options
+            //...txnOptions // overwrite above defaults with passed options
           }).finish()
         },
 
         createTransactionHeaderBytesHash(transactionHeaderBytes) {
-          return createHash('sha256').update(transactionHeaderBytes).digest()
+          return createHash('sha256').update(transactionHeaderBytes).digest('hex')
         },
 
         createTransactions(transactionHeaderBytes, txnSignature, payloadBytes) {
@@ -73,7 +72,7 @@ const SawtoothClientFactory = (factoryOptions) => {
         },
 
         createBatchHeaderBytesHash(batchHeaderBytes) {
-          return createHash('sha256').update(batchHeaderBytes).digest()
+          return createHash('sha256').update(batchHeaderBytes).digest('hex')
         },
 
         createBatch(batchHeaderBytes, batchSignature, transactions) {

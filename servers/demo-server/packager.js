@@ -1,6 +1,9 @@
 const mqtt = require('mqtt')
 const { SawtoothClientFactory } = require('./sawtooth-client')
 
+const fs = require("fs")
+const path = require("path")
+
 const uri = 'mqtts://192.168.11.109:8883'
 
 var caFile = fs.readFileSync(path.join(__dirname, "mqtt", "ca.crt"))
@@ -41,34 +44,42 @@ const ports = {
 
 class Packager {
     constructor(family, payload) {
-        this.payload = payload
+        this.payload = {
+            'key': payload['key'],
+            'data': payload['data']
+        }
+
         this.publicKey = payload['publicKey']
         this.mqttClient = mqtt.connect(`${uri}`, options)
 
         this.restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
         this.restApiUrl = `http://localhost:${ports[`${this.restApiPort}`]}`
 
-        this.client = SawtoothClientFactory({
+        this.sawtoothClient = SawtoothClientFactory({
             publicKey: this.publicKey,
             restApiUrl: this.restApiUrl
         })
 
-        this.transactor = this.client.newTransactor({
+        this.transactor = this.sawtoothClient.newTransactor({
             familyName: family,
             familyVersion: "1.0",
         })
 
         this.mqttClient.on('connect', function() {
-            console.log(`The server for ${this.publicKey} is successfully connected to the MQTT broker`)
+            console.log(`A new packager is successfully connected to the MQTT broker`)
         })
 
-        this.mqttClient.on('message', function(topic, message) {
+        this.mqttClient.on('message', async function(topic, message) {
+            let msgJson = JSON.parse(message.toString())
+
             switch (topic) {
                 case `/topic/${this.publicKey}/txnSig`:
+                    this.txnSignature = msgJson['signature']
                     packageBatch()
                     break
                 case `/topic/${this.publicKey}/batchSig`:
-                    postToRest()
+                    this.batchSignature = msgJson['signature']
+                    await postToRest()
                     break
                 default:
                     console.log(`No specified handler for the topic ${topic}`)
@@ -78,24 +89,33 @@ class Packager {
     }
 
     packageTransaction() {
+        this.targetAddr = this.transactor.calculateAddress(this.payload['key'])
         this.payloadBytes = this.transactor.createPayloadBytes(this.payload)
-        this.transactionHeaderBytes = this.transactor.createTransactionHeaderBytes(this.payload, this.payloadBytes)
+        this.transactionHeaderBytes = this.transactor.createTransactionHeaderBytes(this.targetAddr, this.payloadBytes)
         this.transactionHeaderBytesHash = this.transactor.createTransactionHeaderBytesHash(this.transactionHeaderBytes)
 
         this.mqttClient.subscribe(`/topic/${this.publicKey}/txnSig`)
+
+        console.log(`Publishing transaction hash: ${this.transactionHeaderBytesHash}`)
         this.mqttClient.publish(`/topic/${this.publicKey}/txnHash`, this.transactionHeaderBytesHash)
     }
 
     packageBatch() {
+        this.mqttClient.unsubscribe(`/topic/${this.publicKey}/txnSig`)
+
         this.transactions = this.transactor.createTransactions(this.transactionHeaderBytes, this.txnSignature, this.payloadBytes)
         this.batchHeaderBytes = this.transactor.createBatchHeaderBytes(this.transactions)
         this.batchHeaderBytesHash = this.transactor.createBatchHeaderBytesHash(this.batchHeaderBytes)
 
         this.mqttClient.subscribe(`/topic/${this.publicKey}/batchSig`)
-        this.mqttClient.publish(`/topic/${this.publicKey}/batchHash`, this.batchHeaderBytesHash)
+
+        console.log(`Publishing batch hash: ${this.batchHeaderBytesHash.toString()}`)
+        this.mqttClient.publish(`/topic/${this.publicKey}/batchHash`, this.batchHeaderBytesHash.toString())
     }
 
     async postToRest() {
+        this.mqttClient.unsubscribe(`/topic/${this.publicKey}/batchSig`)
+
         this.batch = this.transactor.createBatch(this.batchHeaderBytes, this.batchSignature, this.transactions)
         this.batchListBytes = this.transactor.createBatchListBytes(this.batch)
 
