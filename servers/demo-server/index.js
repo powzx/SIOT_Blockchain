@@ -69,12 +69,14 @@ server.on('message', async function(topic, message) {
       console.log(`Initializing user ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
 
       packager = new Packager('key', msgJson)
+      packager.attachListeners()
       packager.packageTransaction()
       break
     case '/topic/dispatch/post':
       console.log(`Processing new POST request...`)
 
       packager = new Packager('supply', msgJson)
+      packager.attachListeners()
       packager.packageTransaction()
       break
     case '/topic/dispatch/get':

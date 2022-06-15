@@ -65,27 +65,35 @@ class Packager {
             familyVersion: "1.0",
         })
 
-        this.mqttClient.on('connect', function() {
-            console.log(`A new packager is successfully connected to the MQTT broker`)
-        })
+        // this.mqttClient.on('connect', function() {
+        //     console.log(`A new packager is successfully connected to the MQTT broker`)
+        // })
+    }
 
-        this.mqttClient.on('message', async function(topic, message) {
-            let msgJson = JSON.parse(message.toString())
+    async handleMessage(topic, message) {
 
-            switch (topic) {
-                case `/topic/${this.publicKey}/txnSig`:
-                    this.txnSignature = msgJson['signature']
-                    packageBatch()
-                    break
-                case `/topic/${this.publicKey}/batchSig`:
-                    this.batchSignature = msgJson['signature']
-                    await postToRest()
-                    break
-                default:
-                    console.log(`No specified handler for the topic ${topic}`)
-                    break
-            }
-        })
+        // let msgJson = JSON.parse(message.toString())
+        
+        switch (topic) {
+            case `/topic/${this.publicKey}/txnSig`:
+                this.txnSignature = message.toString()
+                console.log(`Received Transaction Signature: ${this.txnSignature}`)
+                this.packageBatch()
+                break
+            case `/topic/${this.publicKey}/batchSig`:
+                this.batchSignature = message.toString()
+                console.log(`Received Batch Signature: ${this.batchSignature}`)
+                await this.postToRest()
+                break
+            default:
+                console.log(`No specified handler for the topic ${topic}`)
+                break
+        }
+    }
+
+    attachListeners() {
+        this.mqttClient.on('message', async (topic, message) => await this.handleMessage(topic, message))
+        console.log('A new packager is successfully initialised')
     }
 
     packageTransaction() {
@@ -130,7 +138,7 @@ class Packager {
             })
             return txnRes
         } catch (err) {
-            console.log('Error submitting transaction to Sawtooth REST API: ', err)
+            console.log(`Error submitting transaction to Sawtooth REST API ${this.restApiPort}: `, err)
             console.log('Transaction: ', this.payload)
         } finally {
             this.mqttClient.end()
