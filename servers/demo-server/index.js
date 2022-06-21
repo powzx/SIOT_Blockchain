@@ -1,6 +1,7 @@
 const express = require('express')
 const socketIo = require('socket.io')
 const https = require('https')
+const mqtt = require('mqtt')
 const cbor = require('cbor')
 
 const fs = require("fs")
@@ -8,6 +9,7 @@ const path = require("path")
 
 const input = require('./input')
 const { SawtoothClientFactory } = require('./sawtooth-client')
+const { Packager } = require('./packager')
 
 const NUM_OF_PORTS = 20
 const ports = {
@@ -33,49 +35,63 @@ const ports = {
   19: "8027"
 }
 
-/*
-const enclave = EnclaveFactory(Buffer.from(env.privateKey, 'hex'))
+const uri = 'mqtts://192.168.11.109:8883'
 
-const walletClient = SawtoothClientFactory({
-  enclave: enclave,
-  restApiUrl: env.restApiUrl
-})
-
-const walletTransactor = walletClient.newTransactor({
-  familyName: "wallet",
-  familyVersion: "1.0"
-})
-*/
-
-var app = express()
-
-certFile = fs.readFileSync(path.join(__dirname, "server_data", "cert.pem"))
-keyFile = fs.readFileSync(path.join(__dirname, "server_data", "key.pem"))
-//passphraseFile = fs.readFileSync(path.join(__dirname, "server_data", "passphrase.txt")).toString()
+var caFile = fs.readFileSync(path.join(__dirname, "mqtt", "ca.crt"))
+var certFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.crt"))
+var keyFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.key"))
 
 const options = {
-  key: keyFile,
-  cert: certFile
+  rejectUnauthorized: false,
+  connectTimeout: 5000,
+  ca: [ caFile ],
+  cert: certFile,
+  key: keyFile
 }
 
-const server = https.createServer(options, app)
+const server = mqtt.connect(`${uri}`, options)
 
-var io = socketIo(server)
+server.on('connect', function() {
+  server.subscribe('/topic/dispatch/+')
+
+  console.log('Server is successfully connected to the MQTT broker')
+})
+
+server.on('message', async function(topic, message) {
+  console.log(`Received a message of topic ${topic}`)
+  let msgJson = JSON.parse(message.toString())
+  console.log(msgJson)
+
+  let packager
+
+  switch (topic) {
+    case '/topic/dispatch/init':
+      console.log(`Initializing user ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
+
+      packager = new Packager('key', msgJson)
+      packager.attachListeners()
+      packager.packageTransaction()
+      break
+    case '/topic/dispatch/post':
+      console.log(`Processing new POST request...`)
+
+      packager = new Packager('supply', msgJson)
+      packager.attachListeners()
+      packager.packageTransaction()
+      break
+    case '/topic/dispatch/get':
+      break
+    default:
+      console.log(`No specified handler for the topic ${topic}`)
+      break
+  }
+})
+
+/*
 
 io.on('connection', (socket) => { 
-  console.log('New client connected')
-  console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
-
-  let publicKey = ''
 
   socket.on('init', async (data) => {
-    publicKey = data['publicKey']
-    let user = data['data']
-
-    console.log(`Initializing user ${user} from public key: ${publicKey}`)
-
-    let restApiPort = Math.floor(Math.random() * NUM_OF_PORTS)
-    let restApiUrl = `http://localhost:${ports[`${restApiPort}`]}`
 
     keyClient = SawtoothClientFactory({
       publicKey: publicKey,
@@ -201,43 +217,5 @@ io.on('connection', (socket) => {
       console.log(err)
     }
   })
-
-  socket.on('disconnect', () => {
-    console.log("A client disconnected")
-    console.log(`Number of connected clients: ${Object.keys(io.sockets.sockets).length}`)
-  })
-})
-
-server.listen(3000, function(req, res) {
-  console.log("This server is listening to port 3000")
-})
-
-// Test scripts for client
-
-/*
-input.submitPayload({
-  "name": "johndo",
-  "value": 10000
-}, walletTransactor).then((ewa) => {
-  console.log(ewa)
-})
-*/
-
-/*
-input.getBatchList(walletClient).then((data) => {
-  console.log(data)
-})
-*/
-
-/*
-let transactionId = ''
-input.getTransaction(walletClient, transactionId).then((data) => {
-  console.log(data)
-})
-*/
-
-/*
-input.getState(walletClient).then((data) => {
-  console.log(data['data']['data'])
 })
 */
