@@ -44,6 +44,7 @@ const SawtoothClientFactory = (factoryOptions) => {
             signerPublicKey: factoryOptions.publicKey,
             batcherPublicKey: factoryOptions.publicKey,
             dependencies: [],
+            // nonce: 'f2e5661a',
             nonce: randomBytes(32).toString('hex'),
             payloadSha512: createHash('sha512').update(payloadBytes).digest('hex'),
             //...txnOptions // overwrite above defaults with passed options
@@ -51,7 +52,7 @@ const SawtoothClientFactory = (factoryOptions) => {
         },
 
         createTransactionHeaderBytesHash(transactionHeaderBytes) {
-          return createHash('sha256').update(transactionHeaderBytes).digest('hex')
+          return createHash('sha256').update(transactionHeaderBytes).digest()
         },
 
         createTransactions(transactionHeaderBytes, txnSignature, payloadBytes) {
@@ -72,7 +73,7 @@ const SawtoothClientFactory = (factoryOptions) => {
         },
 
         createBatchHeaderBytesHash(batchHeaderBytes) {
-          return createHash('sha256').update(batchHeaderBytes).digest('hex')
+          return createHash('sha256').update(batchHeaderBytes).digest()
         },
 
         createBatch(batchHeaderBytes, batchSignature, transactions) {
@@ -104,7 +105,7 @@ const SawtoothClientFactory = (factoryOptions) => {
             return res
           } catch (err) {
             //socket.emit('error')
-            console.log('error', err)
+            console.log('Error:', err.response.data)
           }
         },
 

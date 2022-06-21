@@ -61,7 +61,7 @@ services:
     expose:
       - 8008
     ports:
-      - "8010:8008"
+      - "8028:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -76,7 +76,7 @@ services:
     expose:
       - 8008
     ports:
-      - "8011:8008"
+      - "8029:8008"
     command: |
       bash -c "
         sawtooth-rest-api \

@@ -22,8 +22,8 @@ const NUM_OF_PORTS = 20
 const ports = {
   0: "8008",
   1: "8009",
-  2: "8010",
-  3: "8011",
+  2: "8028",
+  3: "8029",
   4: "8012",
   5: "8013",
   6: "8014",
@@ -91,6 +91,12 @@ class Packager {
         }
     }
 
+    hexToBytes(hex) {
+        for (var bytes = [], c = 0; c < hex.length; c += 2)
+            bytes.push(parseInt(hex.substr(c, 2), 16));
+        return bytes;
+    }
+
     attachListeners() {
         this.mqttClient.on('message', async (topic, message) => await this.handleMessage(topic, message))
         console.log('A new packager is successfully initialised')
@@ -104,7 +110,9 @@ class Packager {
 
         this.mqttClient.subscribe(`/topic/${this.publicKey}/txnSig`)
 
-        console.log(`Publishing transaction hash: ${this.transactionHeaderBytesHash}`)
+        console.log(`Publishing transaction hash: ${this.transactionHeaderBytesHash.toString('hex')}`)
+        // console.log(`Transaction Hash Bytes: ${this.transactionHeaderBytesHash}`)
+
         this.mqttClient.publish(`/topic/${this.publicKey}/txnHash`, this.transactionHeaderBytesHash)
     }
 
@@ -117,8 +125,10 @@ class Packager {
 
         this.mqttClient.subscribe(`/topic/${this.publicKey}/batchSig`)
 
-        console.log(`Publishing batch hash: ${this.batchHeaderBytesHash.toString()}`)
-        this.mqttClient.publish(`/topic/${this.publicKey}/batchHash`, this.batchHeaderBytesHash.toString())
+        console.log(`Publishing batch hash: ${this.batchHeaderBytesHash.toString('hex')}`)
+        // console.log(`Batch Hash Bytes: ${this.batchHeaderBytesHash}`)
+
+        this.mqttClient.publish(`/topic/${this.publicKey}/batchHash`, this.batchHeaderBytesHash)
     }
 
     async postToRest() {
@@ -127,7 +137,7 @@ class Packager {
         this.batch = this.transactor.createBatch(this.batchHeaderBytes, this.batchSignature, this.transactions)
         this.batchListBytes = this.transactor.createBatchListBytes(this.batch)
 
-        console.log(`Submitting report transaction to Sawtooth REST API`)
+        console.log(`Submitting report transaction to Sawtooth REST API ${this.restApiPort}`)
         console.log(this.payload)
 
         try {
@@ -141,6 +151,7 @@ class Packager {
             console.log(`Error submitting transaction to Sawtooth REST API ${this.restApiPort}: `, err)
             console.log('Transaction: ', this.payload)
         } finally {
+            console.log('A packager has finalized and disconnected from the MQTT broker')
             this.mqttClient.end()
         }
     }
