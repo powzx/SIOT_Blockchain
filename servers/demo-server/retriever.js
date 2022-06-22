@@ -1,4 +1,5 @@
 const mqtt = require('mqtt')
+const cbor = require('cbor')
 const { leafHash, SawtoothClientFactory } = require('./sawtooth-client')
 
 const fs = require("fs")
@@ -106,11 +107,13 @@ class Retriever {
                     }
                 }
             }
-    
+
+            let packetString = JSON.stringify(packet)
+
             console.log(`Sending packet to client:`)
-            console.log(JSON.stringify(packet))
+            console.log(packetString)
     
-            this.mqttClient.publish(`/topic/users/${this.uuid}`, JSON.stringify(packet))
+            this.mqttClient.publish(`/topic/users/${this.uuid}`, packetString)
 
         } catch (err) {
             console.log(err)
