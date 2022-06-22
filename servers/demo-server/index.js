@@ -10,6 +10,7 @@ const path = require("path")
 const input = require('./input')
 const { SawtoothClientFactory } = require('./sawtooth-client')
 const { Packager } = require('./packager')
+const { Retriever } = require('./retriever')
 
 const NUM_OF_PORTS = 20
 const ports = {
@@ -63,6 +64,7 @@ server.on('message', async function(topic, message) {
   console.log(msgJson)
 
   let packager
+  let retriever
 
   switch (topic) {
     case '/topic/dispatch/init':
@@ -80,6 +82,10 @@ server.on('message', async function(topic, message) {
       packager.packageTransaction()
       break
     case '/topic/dispatch/get':
+      console.log(`Processing new GET request...`)
+
+      retriever = new Retriever(msgJson['serialNum'], msgJson['uuid'])
+      retriever.getRecords()
       break
     default:
       console.log(`No specified handler for the topic ${topic}`)
