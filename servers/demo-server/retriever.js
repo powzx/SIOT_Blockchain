@@ -42,6 +42,9 @@ const ports = {
   19: "8027"
 }
 
+const supplyHash = leafHash('supply', 6)
+const keyHash = leafHash('key', 6)
+
 class Retriever {
     constructor(serialNum, uuid) {
         this.serialNum = serialNum
@@ -56,7 +59,7 @@ class Retriever {
             restApiUrl: this.restApiUrl
         })
 
-        this.dataAddr = leafHash('supply', 6) + leafHash(this.serialNum, 64)
+        this.dataAddr = supplyHash + leafHash(this.serialNum, 64)
     }
 
     async getRecords() {
@@ -84,7 +87,7 @@ class Retriever {
         
                     // get public key info
                     try {
-                        let keyAddress = leafHash('key', 6) + leafHash(authorKey, 64)
+                        let keyAddress = keyHash + leafHash(authorKey, 64)
                         let keyState = await this.sawtoothClient.get(`/state/${keyAddress}`)
                         let keyStatePayload = keyState.data.data
             
