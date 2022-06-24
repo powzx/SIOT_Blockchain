@@ -49,6 +49,8 @@ class Packager {
             'data': payload['data']
         }
 
+        this.family = family
+
         this.publicKey = payload['publicKey']
         this.mqttClient = mqtt.connect(`${uri}`, options)
 
@@ -146,6 +148,12 @@ class Packager {
                 status: txnRes.status,
                 statusText: txnRes.statusText
             })
+            
+            if (this.family == 'supply') {
+                this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))
+                console.log(`Broadcasting updates on key ${this.payload['key']}`)
+            }
+
             return txnRes
         } catch (err) {
             console.log(`Error submitting transaction to Sawtooth REST API ${this.restApiPort}: `, err)
