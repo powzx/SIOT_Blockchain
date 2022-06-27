@@ -609,6 +609,148 @@ services:
       - validator-19
     entrypoint: intkey-tp-python -vv -C tcp://validator-19:4004
 
+# ------------=== Identity TP ===-------------
+
+  identity-tp-0:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-0
+    depends_on:
+      - validator-0
+    entrypoint: identity-tp -vv -C tcp://validator-0:4004
+
+  identity-tp-1:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-1
+    depends_on:
+      - validator-1
+    entrypoint: identity-tp -vv -C tcp://validator-1:4004
+
+  identity-tp-2:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-2
+    depends_on:
+      - validator-2
+    entrypoint: identity-tp -vv -C tcp://validator-2:4004
+
+  identity-tp-3:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-3
+    depends_on:
+      - validator-3
+    entrypoint: identity-tp -vv -C tcp://validator-3:4004
+
+  identity-tp-4:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-4
+    depends_on:
+      - validator-4
+    entrypoint: identity-tp -vv -C tcp://validator-4:4004
+
+  identity-tp-5:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-5
+    depends_on:
+      - validator-5
+    entrypoint: identity-tp -vv -C tcp://validator-5:4004
+
+  identity-tp-6:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-6
+    depends_on:
+      - validator-6
+    entrypoint: identity-tp -vv -C tcp://validator-6:4004
+
+  identity-tp-7:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-7
+    depends_on:
+      - validator-7
+    entrypoint: identity-tp -vv -C tcp://validator-7:4004
+
+  identity-tp-8:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-8
+    depends_on:
+      - validator-8
+    entrypoint: identity-tp -vv -C tcp://validator-8:4004
+
+  identity-tp-9:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-9
+    depends_on:
+      - validator-9
+    entrypoint: identity-tp -vv -C tcp://validator-9:4004
+
+  identity-tp-10:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-10
+    depends_on:
+      - validator-10
+    entrypoint: identity-tp -vv -C tcp://validator-10:4004
+
+  identity-tp-11:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-11
+    depends_on:
+      - validator-11
+    entrypoint: identity-tp -vv -C tcp://validator-11:4004
+
+  identity-tp-12:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-12
+    depends_on:
+      - validator-12
+    entrypoint: identity-tp -vv -C tcp://validator-12:4004
+
+  identity-tp-13:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-13
+    depends_on:
+      - validator-13
+    entrypoint: identity-tp -vv -C tcp://validator-13:4004
+
+  identity-tp-14:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-14
+    depends_on:
+      - validator-14
+    entrypoint: identity-tp -vv -C tcp://validator-14:4004
+
+  identity-tp-15:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-15
+    depends_on:
+      - validator-15
+    entrypoint: identity-tp -vv -C tcp://validator-15:4004
+
+  identity-tp-16:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-16
+    depends_on:
+      - validator-16
+    entrypoint: identity-tp -vv -C tcp://validator-16:4004
+
+  identity-tp-17:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-17
+    depends_on:
+      - validator-17
+    entrypoint: identity-tp -vv -C tcp://validator-17:4004
+
+  identity-tp-18:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-18
+    depends_on:
+      - validator-18
+    entrypoint: identity-tp -vv -C tcp://validator-18:4004
+
+  identity-tp-19:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-19
+    depends_on:
+      - validator-19
+    entrypoint: identity-tp -vv -C tcp://validator-19:4004
+
 # --------------=== Demo TP ===---------------
 
   demo-tp-0:
