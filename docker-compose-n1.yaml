@@ -20,6 +20,7 @@ version: '3.6'
 volumes:
   pbft-shared:
   ledger:
+  userKeys:
 
 services:
 
@@ -318,6 +319,7 @@ services:
     container_name: sawtooth-shell-default
     volumes:
       - pbft-shared:/pbft-shared
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         sawtooth keygen
@@ -609,6 +611,148 @@ services:
       - validator-19
     entrypoint: intkey-tp-python -vv -C tcp://validator-19:4004
 
+# ------------=== Identity TP ===-------------
+
+  identity-tp-0:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-0
+    depends_on:
+      - validator-0
+    entrypoint: identity-tp -vv -C tcp://validator-0:4004
+
+  identity-tp-1:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-1
+    depends_on:
+      - validator-1
+    entrypoint: identity-tp -vv -C tcp://validator-1:4004
+
+  identity-tp-2:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-2
+    depends_on:
+      - validator-2
+    entrypoint: identity-tp -vv -C tcp://validator-2:4004
+
+  identity-tp-3:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-3
+    depends_on:
+      - validator-3
+    entrypoint: identity-tp -vv -C tcp://validator-3:4004
+
+  identity-tp-4:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-4
+    depends_on:
+      - validator-4
+    entrypoint: identity-tp -vv -C tcp://validator-4:4004
+
+  identity-tp-5:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-5
+    depends_on:
+      - validator-5
+    entrypoint: identity-tp -vv -C tcp://validator-5:4004
+
+  identity-tp-6:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-6
+    depends_on:
+      - validator-6
+    entrypoint: identity-tp -vv -C tcp://validator-6:4004
+
+  identity-tp-7:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-7
+    depends_on:
+      - validator-7
+    entrypoint: identity-tp -vv -C tcp://validator-7:4004
+
+  identity-tp-8:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-8
+    depends_on:
+      - validator-8
+    entrypoint: identity-tp -vv -C tcp://validator-8:4004
+
+  identity-tp-9:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-9
+    depends_on:
+      - validator-9
+    entrypoint: identity-tp -vv -C tcp://validator-9:4004
+
+  identity-tp-10:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-10
+    depends_on:
+      - validator-10
+    entrypoint: identity-tp -vv -C tcp://validator-10:4004
+
+  identity-tp-11:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-11
+    depends_on:
+      - validator-11
+    entrypoint: identity-tp -vv -C tcp://validator-11:4004
+
+  identity-tp-12:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-12
+    depends_on:
+      - validator-12
+    entrypoint: identity-tp -vv -C tcp://validator-12:4004
+
+  identity-tp-13:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-13
+    depends_on:
+      - validator-13
+    entrypoint: identity-tp -vv -C tcp://validator-13:4004
+
+  identity-tp-14:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-14
+    depends_on:
+      - validator-14
+    entrypoint: identity-tp -vv -C tcp://validator-14:4004
+
+  identity-tp-15:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-15
+    depends_on:
+      - validator-15
+    entrypoint: identity-tp -vv -C tcp://validator-15:4004
+
+  identity-tp-16:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-16
+    depends_on:
+      - validator-16
+    entrypoint: identity-tp -vv -C tcp://validator-16:4004
+
+  identity-tp-17:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-17
+    depends_on:
+      - validator-17
+    entrypoint: identity-tp -vv -C tcp://validator-17:4004
+
+  identity-tp-18:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-18
+    depends_on:
+      - validator-18
+    entrypoint: identity-tp -vv -C tcp://validator-18:4004
+
+  identity-tp-19:
+    image: hyperledger/sawtooth-identity-tp:chime
+    container_name: sawtooth-identity-tp-19
+    depends_on:
+      - validator-19
+    entrypoint: identity-tp -vv -C tcp://validator-19:4004
+
 # --------------=== Demo TP ===---------------
 
   demo-tp-0:
@@ -785,6 +929,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-0.priv ]; then
@@ -831,10 +976,10 @@ services:
           fi &&
           if [ ! -e /var/lib/sawtooth/genesis.batch ]; then
             sawadm genesis config-genesis.batch config.batch
+          fi &&
+          if [ ! -e /root/.sawtooth/keys/root.priv ]; then
+          sawtooth keygen root
           fi
-        fi &&
-        if [ ! -e /root/.sawtooth/keys/my_key.priv ]; then
-          sawtooth keygen my_key
         fi &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8800 \
@@ -857,6 +1002,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-1.priv ]; then
@@ -869,7 +1015,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-1.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-1.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8801 \
           --bind component:tcp://eth0:4004 \
@@ -892,6 +1037,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-2.priv ]; then
@@ -904,7 +1050,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-2.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-2.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8802 \
           --bind component:tcp://eth0:4004 \
@@ -928,6 +1073,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-3.priv ]; then
@@ -940,7 +1086,6 @@ services:
          cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-3.pub
          cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-3.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8803 \
           --bind component:tcp://eth0:4004 \
@@ -965,6 +1110,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-4.priv ]; then
@@ -977,7 +1123,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-4.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-4.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8804 \
           --bind component:tcp://eth0:4004 \
@@ -1004,6 +1149,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-5.priv ]; then
@@ -1016,7 +1162,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-5.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-5.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8805 \
           --bind component:tcp://eth0:4004 \
@@ -1044,6 +1189,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-6.priv ]; then
@@ -1056,7 +1202,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-6.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-6.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8806 \
           --bind component:tcp://eth0:4004 \
@@ -1085,6 +1230,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-7.priv ]; then
@@ -1097,7 +1243,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-7.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-7.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8807 \
           --bind component:tcp://eth0:4004 \
@@ -1127,6 +1272,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-8.priv ]; then
@@ -1139,7 +1285,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-8.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-8.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8808 \
           --bind component:tcp://eth0:4004 \
@@ -1170,6 +1315,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-9.priv ]; then
@@ -1182,7 +1328,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-9.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-9.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8809 \
           --bind component:tcp://eth0:4004 \
@@ -1214,6 +1359,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-10.priv ]; then
@@ -1226,7 +1372,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-10.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-10.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8810 \
           --bind component:tcp://eth0:4004 \
@@ -1259,6 +1404,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-11.priv ]; then
@@ -1271,7 +1417,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-11.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-11.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8811 \
           --bind component:tcp://eth0:4004 \
@@ -1305,6 +1450,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-12.priv ]; then
@@ -1317,7 +1463,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-12.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-12.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8812 \
           --bind component:tcp://eth0:4004 \
@@ -1352,6 +1497,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-13.priv ]; then
@@ -1364,7 +1510,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-13.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-13.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8813 \
           --bind component:tcp://eth0:4004 \
@@ -1400,6 +1545,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-14.priv ]; then
@@ -1412,7 +1558,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-14.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-14.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8814 \
           --bind component:tcp://eth0:4004 \
@@ -1449,6 +1594,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-15.priv ]; then
@@ -1461,7 +1607,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-15.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-15.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8815 \
           --bind component:tcp://eth0:4004 \
@@ -1499,6 +1644,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-16.priv ]; then
@@ -1511,7 +1657,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-16.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-16.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8816 \
           --bind component:tcp://eth0:4004 \
@@ -1550,6 +1695,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-17.priv ]; then
@@ -1562,7 +1708,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-17.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-17.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8817 \
           --bind component:tcp://eth0:4004 \
@@ -1602,6 +1747,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-18.priv ]; then
@@ -1614,7 +1760,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-18.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-18.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8818 \
           --bind component:tcp://eth0:4004 \
@@ -1655,6 +1800,7 @@ services:
     volumes:
       - pbft-shared:/pbft-shared
       - ledger:/var/lib/sawtooth
+      - userKeys:/root/.sawtooth/keys
     command: |
       bash -c "
         if [ -e /pbft-shared/validators/validator-19.priv ]; then
@@ -1667,7 +1813,6 @@ services:
           cp /etc/sawtooth/keys/validator.pub /pbft-shared/validators/validator-19.pub
           cp /etc/sawtooth/keys/validator.priv /pbft-shared/validators/validator-19.priv
         fi &&
-        sawtooth keygen my_key &&
         sawtooth-validator -vv \
           --endpoint tcp://${HOST}:8819 \
           --bind component:tcp://eth0:4004 \
