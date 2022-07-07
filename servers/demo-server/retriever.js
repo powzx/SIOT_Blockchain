@@ -63,6 +63,22 @@ class Retriever {
         this.dataAddr = supplyHash + leafHash(this.serialNum, 64)
     }
 
+    async getUserDetails() {
+        try {
+            let userKeyAddress = keyHash + leafHash(this.serialNum, 64)
+            let userKeyState = await this.sawtoothClient.get(`/state/${userKeyAddress}`)
+            let userKeyStatePayload = userKeyState.data.data
+            let userDecodedKeyStatePayload = Buffer.from(userKeyStatePayload, 'base64')
+            let userKeyStatePayloadJson = cbor.decode(userDecodedKeyStatePayload)
+            
+            console.log(userKeyStatePayloadJson)
+
+            this.mqttClient.publish(`/topic/${this.uuid}/user/details`, JSON.stringify(userKeyStatePayloadJson))
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     async getRecords() {
 
         // get list of all transactions

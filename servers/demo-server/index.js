@@ -23,7 +23,7 @@ const options = {
 const server = mqtt.connect(`${uri}`, options)
 
 server.on('connect', function() {
-  server.subscribe('/topic/dispatch/+')
+  server.subscribe('/topic/dispatch/#')
 
   console.log('Server is successfully connected to the MQTT broker')
 })
@@ -37,26 +37,39 @@ server.on('message', async function(topic, message) {
   let retriever
 
   switch (topic) {
-    case '/topic/dispatch/init':
-      console.log(`Initializing user ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
+    case '/topic/dispatch/sensor/init':
+      console.log(`Initializing sensor ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
 
       packager = new Packager('key', msgJson)
       packager.attachListeners()
       packager.packageTransaction()
       break
-    case '/topic/dispatch/post':
-      console.log(`Processing new POST request...`)
+    case '/topic/dispatch/user/init':
+      console.log(`Initializing user ${msgJson['data']['name']} from public key: ${msgJson['publicKey']}`)
+
+      packager = new Packager('key', msgJson)
+      packager.attachListeners()
+      packager.packageTransaction()
+      break
+    case '/topic/dispatch/sensor/post':
+      console.log(`Posting sensed data...`)
 
       packager = new Packager('supply', msgJson)
       packager.attachListeners()
       packager.packageTransaction()
       break
-    case '/topic/dispatch/get':
-      console.log(`Processing new GET request...`)
+    case '/topic/dispatch/sensor/get':
+      console.log(`Getting sensed data...`)
 
       retriever = new Retriever(msgJson['serialNum'], msgJson['uuid'])
       retriever.getRecords()
       break
+    case '/topic/dispatch/user/get':
+      console.log(`Getting user details...`)
+
+      retriever = new Retriever(msgJson['publicKey'], msgJson['publicKey'])
+      retriever.getUserDetails()
+    break
     default:
       console.log(`No specified handler for the topic ${topic}`)
       break

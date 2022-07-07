@@ -77,12 +77,12 @@ class Packager {
         // let msgJson = JSON.parse(message.toString())
         
         switch (topic) {
-            case `/topic/${this.publicKey}/txnSig`:
+            case `/topic/${this.publicKey}/sig/txn`:
                 this.txnSignature = message.toString()
                 console.log(`Received Transaction Signature: ${this.txnSignature}`)
                 this.packageBatch()
                 break
-            case `/topic/${this.publicKey}/batchSig`:
+            case `/topic/${this.publicKey}/sig/batch`:
                 this.batchSignature = message.toString()
                 console.log(`Received Batch Signature: ${this.batchSignature}`)
                 await this.postToRest()
@@ -110,31 +110,31 @@ class Packager {
         this.transactionHeaderBytes = this.transactor.createTransactionHeaderBytes(this.targetAddr, this.payloadBytes)
         this.transactionHeaderBytesHash = this.transactor.createTransactionHeaderBytesHash(this.transactionHeaderBytes)
 
-        this.mqttClient.subscribe(`/topic/${this.publicKey}/txnSig`)
+        this.mqttClient.subscribe(`/topic/${this.publicKey}/sig/txn`)
 
         console.log(`Publishing transaction hash: ${this.transactionHeaderBytesHash.toString('hex')}`)
         // console.log(`Transaction Hash Bytes: ${this.transactionHeaderBytesHash}`)
 
-        this.mqttClient.publish(`/topic/${this.publicKey}/txnHash`, this.transactionHeaderBytesHash)
+        this.mqttClient.publish(`/topic/${this.publicKey}/hash/txn`, this.transactionHeaderBytesHash)
     }
 
     packageBatch() {
-        this.mqttClient.unsubscribe(`/topic/${this.publicKey}/txnSig`)
+        this.mqttClient.unsubscribe(`/topic/${this.publicKey}/sig/txn`)
 
         this.transactions = this.transactor.createTransactions(this.transactionHeaderBytes, this.txnSignature, this.payloadBytes)
         this.batchHeaderBytes = this.transactor.createBatchHeaderBytes(this.transactions)
         this.batchHeaderBytesHash = this.transactor.createBatchHeaderBytesHash(this.batchHeaderBytes)
 
-        this.mqttClient.subscribe(`/topic/${this.publicKey}/batchSig`)
+        this.mqttClient.subscribe(`/topic/${this.publicKey}/sig/batch`)
 
         console.log(`Publishing batch hash: ${this.batchHeaderBytesHash.toString('hex')}`)
         // console.log(`Batch Hash Bytes: ${this.batchHeaderBytesHash}`)
 
-        this.mqttClient.publish(`/topic/${this.publicKey}/batchHash`, this.batchHeaderBytesHash)
+        this.mqttClient.publish(`/topic/${this.publicKey}/hash/batch`, this.batchHeaderBytesHash)
     }
 
     async postToRest() {
-        this.mqttClient.unsubscribe(`/topic/${this.publicKey}/batchSig`)
+        this.mqttClient.unsubscribe(`/topic/${this.publicKey}/sig/batch`)
 
         this.batch = this.transactor.createBatch(this.batchHeaderBytes, this.batchSignature, this.transactions)
         this.batchListBytes = this.transactor.createBatchListBytes(this.batch)
@@ -148,11 +148,8 @@ class Packager {
                 status: txnRes.status,
                 statusText: txnRes.statusText
             })
-            
-            if (this.family == 'supply') {
-                this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))
-                console.log(`Broadcasting updates on key ${this.payload['key']}`)
-            }
+
+            this.respond()
 
             return txnRes
         } catch (err) {
@@ -161,6 +158,16 @@ class Packager {
         } finally {
             console.log('A packager has finalized and disconnected from the MQTT broker')
             this.mqttClient.end()
+        }
+    }
+
+    respond() {
+        if (this.family == 'key') {
+            this.mqttClient.publish(`/topic/${this.publicKey}/response`)
+            console.log(`Responding to /topic/${this.publicKey}/response`)
+        } else if (this.family == 'supply') {
+            this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))
+            console.log(`Broadcasting updates on key ${this.payload['key']}`)
         }
     }
 }
