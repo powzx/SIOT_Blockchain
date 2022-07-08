@@ -54,7 +54,7 @@ server.on('message', async function(topic, message) {
     case '/topic/dispatch/get':
       console.log(`Processing new GET request...`)
 
-      retriever = new Retriever(msgJson['serialNum'], msgJson['uuid'])
+      retriever = new Retriever(msgJson['serialNum'], msgJson['userPubKey'])
       retriever.getRecords()
       break
     default:
