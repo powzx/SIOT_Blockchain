@@ -148,7 +148,9 @@ class Packager {
                 status: txnRes.status,
                 statusText: txnRes.statusText
             })
-            
+        
+            this.mqttClient.publish(`/topic/${this.payload['key']}/response`)
+
             if (this.family == 'supply') {
                 this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))
                 console.log(`Broadcasting updates on key ${this.payload['key']}`)

@@ -45,6 +45,7 @@ const ports = {
 
 const supplyHash = leafHash('supply', 6)
 const keyHash = leafHash('key', 6)
+const userHash = leafHash('user', 6)
 
 class Retriever {
     constructor(serialNum, uuid) {
@@ -61,6 +62,23 @@ class Retriever {
         })
 
         this.dataAddr = supplyHash + leafHash(this.serialNum, 64)
+    }
+
+    async getUser() {
+        try {
+            let userAddress = userHash + leafHash(this.serialNum, 64)
+            let userState = await this.sawtoothClient.get(`/state/${userAddress}`)
+            let userStatePayload = userState.data.data
+
+            let decodedUserStatePayload = Buffer.from(userStatePayload, 'base64')
+            let userStatePayloadJson = cbor.decode(decodedUserStatePayload)
+
+            console.log(userStatePayloadJson)
+            this.mqttClient.publish(`/topic/${this.uuid}/userDetails`, JSON.stringify(userStatePayloadJson))
+
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     async getRecords() {

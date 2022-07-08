@@ -23,7 +23,7 @@ const options = {
 const server = mqtt.connect(`${uri}`, options)
 
 server.on('connect', function() {
-  server.subscribe('/topic/dispatch/+')
+  server.subscribe('/topic/dispatch/#')
 
   console.log('Server is successfully connected to the MQTT broker')
 })
@@ -38,7 +38,7 @@ server.on('message', async function(topic, message) {
 
   switch (topic) {
     case '/topic/dispatch/init':
-      console.log(`Initializing user ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
+      console.log(`Initializing chip ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
 
       packager = new Packager('key', msgJson)
       packager.attachListeners()
@@ -56,6 +56,19 @@ server.on('message', async function(topic, message) {
 
       retriever = new Retriever(msgJson['serialNum'], msgJson['uuid'])
       retriever.getRecords()
+      break
+    case '/topic/dispatch/user/init':
+      console.log(`Initializing user ${msgJson['username']} from public key: ${msgJson['publicKey']}...`)
+
+      packager = new Packager('user', msgJson)
+      packager.attachListeners()
+      packager.packageTransaction()
+      break
+    case '/topic/dispatch/user/get':
+      console.log(`Processing new GET request...`)
+
+      retriever = new Retriever(msgJson['username'], msgJson['publicKey'])
+      retriever.getUser()
       break
     default:
       console.log(`No specified handler for the topic ${topic}`)
