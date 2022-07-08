@@ -45,6 +45,7 @@ const ports = {
 
 const supplyHash = leafHash('supply', 6)
 const keyHash = leafHash('key', 6)
+const contractHash = leafHash('contract', 6)
 
 class Retriever {
     constructor(serialNum, userPubKey) {
