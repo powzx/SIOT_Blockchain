@@ -64,6 +64,16 @@ server.on('message', async function(topic, message) {
       retriever = new Retriever(msgJson['serialNum'], msgJson['userPubKey'])
       retriever.getRecords()
       break
+    case '/topic/dispatch/contract':
+      console.log(`Sending contract to recipient ${msgJson['key']}...`)
+
+      retriever = new Retriever(msgJson['key'], msgJson['publicKey'])
+      retriever.getUser()
+
+      packager = new Packager('contract', msgJson)
+      packager.attachListeners()
+      packager.packageTransaction()
+      break
     default:
       console.log(`No specified handler for the topic ${topic}`)
       break

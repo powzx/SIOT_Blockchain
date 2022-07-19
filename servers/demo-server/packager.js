@@ -170,7 +170,9 @@ class Packager {
                 statusText: txnRes.statusText
             })
 
-            setTimeout(() => this.getBatchStatus(), 3000)
+            if (this.family == 'user') {
+                setTimeout(() => this.getBatchStatus(), 3000)
+            }
             
             // if (this.family == 'supply') {
             //     this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))

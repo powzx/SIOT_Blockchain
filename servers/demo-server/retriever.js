@@ -65,6 +65,21 @@ class Retriever {
         this.dataAddr = supplyHash + leafHash(this.serialNum, 64)
     }
 
+    async getUser() {
+        try {
+            let keyAddress = userHash + leafHash(this.serialNum, 64)
+            let keyState = await this.sawtoothClient.get(`/state/${keyAddress}`)
+            let keyStatePayload = keyState.data.data
+
+            let decodedKeyStatePayload = Buffer.from(keyStatePayload, 'base64')
+            let keyStatePayloadJson = cbor.decode(decodedKeyStatePayload)
+
+            console.log(keyStatePayloadJson[`${this.serialNum}`])
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     async getRecords() {
 
         // get list of all transactions
