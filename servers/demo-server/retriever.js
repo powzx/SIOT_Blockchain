@@ -75,6 +75,7 @@ class Retriever {
             let keyStatePayloadJson = cbor.decode(decodedKeyStatePayload)
 
             console.log(keyStatePayloadJson[`${this.serialNum}`])
+            return keyStatePayloadJson[`${this.serialNum}`]
         } catch (err) {
             console.log(err)
         }

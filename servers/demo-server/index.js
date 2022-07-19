@@ -68,9 +68,15 @@ server.on('message', async function(topic, message) {
       console.log(`Sending contract to recipient ${msgJson['key']}...`)
 
       retriever = new Retriever(msgJson['key'], msgJson['publicKey'])
-      retriever.getUser()
+      let user = await retriever.getUser()
 
-      packager = new Packager('contract', msgJson)
+      let payload = {
+        'publicKey': msgJson['publicKey'],
+        'key': user,
+        'data': msgJson['data']
+      }
+
+      packager = new Packager('contract', payload)
       packager.attachListeners()
       packager.packageTransaction()
       break
