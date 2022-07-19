@@ -26,7 +26,7 @@ const applySet = (context, address, name, value) => (possibleAddressValues) => {
     let stateValueRep = possibleAddressValues[address];
     console.log(stateValueRep);
     let stateValue;
-    if (stateValueRep && stateValueRep > 0) {
+    if (stateValueRep && stateValueRep.length > 0) {
         stateValue = cbor.decodeFirstSync(stateValueRep);
         console.log(stateValue);
         let stateName = stateValue[name];

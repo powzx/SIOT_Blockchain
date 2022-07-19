@@ -37,10 +37,17 @@ server.on('message', async function(topic, message) {
   let retriever
 
   switch (topic) {
-    case '/topic/dispatch/init':
-      console.log(`Initializing user ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
+    case '/topic/dispatch/initESP':
+      console.log(`Initializing ESP ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
 
       packager = new Packager('key', msgJson)
+      packager.attachListeners()
+      packager.packageTransaction()
+      break
+    case '/topic/dispatch/initUser':
+      console.log(`Initializing user ${msgJson['data']} from public key: ${msgJson['publicKey']}...`)
+
+      packager = new Packager('user', msgJson)
       packager.attachListeners()
       packager.packageTransaction()
       break

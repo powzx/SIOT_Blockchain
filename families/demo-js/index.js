@@ -8,6 +8,7 @@ const ContractHandler = require('./src/tp/contract_handler');
 const WalletHandler = require('./src/tp/demo_handler');
 const KeyHandler = require('./src/tp/key_handler');
 const SupplyHandler = require('./src/tp/supply_handler');
+const UserHandler = require('./src/tp/user_handler');
 
 const transactionProcessor = new TransactionProcessor(`tcp://${process.env.VALIDATOR_NUM}:4004`);
 
@@ -15,6 +16,7 @@ const transactionProcessor = new TransactionProcessor(`tcp://${process.env.VALID
 transactionProcessor.addHandler(new KeyHandler());
 transactionProcessor.addHandler(new SupplyHandler());
 transactionProcessor.addHandler(new ContractHandler());
+transactionProcessor.addHandler(new UserHandler());
 transactionProcessor.start();
 
 process.on('SIGUSR2', () => {

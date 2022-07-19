@@ -133,6 +133,27 @@ class Packager {
         this.mqttClient.publish(`/topic/${this.publicKey}/batchHash`, this.batchHeaderBytesHash)
     }
 
+    async getBatchStatus() {
+        try {
+            let response = await this.sawtoothClient.get(`/batch_statuses?id=${this.batchSignature}`)
+            let status = response.data.data[0].status
+            console.log(`Batch is ${status}`)
+
+            console.log(`Broadcasting updates on key ${this.publicKey}`)
+
+            if (status == "COMMITTED") {
+                this.mqttClient.publish(`/topic/${this.publicKey}/response/post`, '300')
+            } else {
+                this.mqttClient.publish(`/topic/${this.publicKey}/response/post`, '400')
+            }
+        } catch (err) {
+            console.log(err)
+        } finally {
+            console.log('A packager has finalized and disconnected from the MQTT broker')
+            this.mqttClient.end()
+        }
+    }
+
     async postToRest() {
         this.mqttClient.unsubscribe(`/topic/${this.publicKey}/batchSig`)
 
@@ -148,22 +169,21 @@ class Packager {
                 status: txnRes.status,
                 statusText: txnRes.statusText
             })
+
+            setTimeout(() => this.getBatchStatus(), 3000)
             
             // if (this.family == 'supply') {
             //     this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))
             //     console.log(`Broadcasting updates on key ${this.payload['key']}`)
             // }
 
-            this.mqttClient.publish(`/topic/${this.payload['key']}/response/post`, JSON.stringify(this.payload))
-            console.log(`Broadcasting updates on key ${this.payload['key']}`)
+            // this.mqttClient.publish(`/topic/${this.publicKey}/response/post`, '300')
+            // console.log(`Broadcasting updates on key ${this.publicKey}`)
 
             return txnRes
         } catch (err) {
             console.log(`Error submitting transaction to Sawtooth REST API ${this.restApiPort}: `, err)
             console.log('Transaction: ', this.payload)
-        } finally {
-            console.log('A packager has finalized and disconnected from the MQTT broker')
-            this.mqttClient.end()
         }
     }
 }
