@@ -58,7 +58,7 @@ server.on('message', async function(topic, message) {
       packager.attachListeners()
       packager.packageTransaction()
       break
-    case '/topic/dispatch/get':
+    case '/topic/dispatch/getESP':
       console.log(`Processing new GET request...`)
 
       retriever = new Retriever(msgJson['serialNum'], msgJson['userPubKey'])
@@ -79,6 +79,12 @@ server.on('message', async function(topic, message) {
       packager = new Packager('contract', payload)
       packager.attachListeners()
       packager.packageTransaction()
+      break
+    case '/topic/dispatch/getContract':
+      console.log(`Getting contracts...`)
+
+      retriever = new Retriever(msgJson['serialNum'], msgJson['userPubKey'])
+      retriever.getContracts()
       break
     default:
       console.log(`No specified handler for the topic ${topic}`)

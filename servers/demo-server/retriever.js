@@ -62,7 +62,7 @@ class Retriever {
             restApiUrl: this.restApiUrl
         })
 
-        this.dataAddr = supplyHash + leafHash(this.serialNum, 64)
+        // this.dataAddr = supplyHash + leafHash(this.serialNum, 64)
     }
 
     async getUser() {
@@ -95,7 +95,7 @@ class Retriever {
     
             for (let i = 0; i < transactions.data.data.length; i++) {
                 // filter transactions according to serial number
-                if (transactions.data.data[i].header.inputs[0] == this.dataAddr) {
+                if (transactions.data.data[i].header.inputs[0] == supplyHash + leafHash(this.serialNum, 64)) {
         
                     let authorKey = transactions.data.data[i].header.signer_public_key
                     let payload = transactions.data.data[i].payload
@@ -131,7 +131,62 @@ class Retriever {
             console.log(`Sending packet to client:`)
             console.log(packetString)
     
-            this.mqttClient.publish(`/topic/${this.userPubKey}/response/get`, packetString)
+            this.mqttClient.publish(`/topic/${this.userPubKey}/response/getESP`, packetString)
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async getContracts() {
+
+        try {
+            let contracts = await this.sawtoothClient.get('/transactions')
+            console.log(`Contracts received from REST API ${this.restApiPort}`)
+    
+            let packet = {
+                'serialNum': this.serialNum,
+                'contracts': []
+            }
+
+            for (let i = 0; i < contracts.data.data.length; i++) {
+                if (contracts.data.data[i].header.inputs[0] == contractHash + leafHash(this.serialNum, 64)) {
+        
+                    // let authorKey = contracts.data.data[i].header.signer_public_key
+                    let payload = contracts.data.data[i].payload
+                    let decodedPayload = Buffer.from(payload, 'base64')
+                    let payloadJson = cbor.decode(decodedPayload)
+        
+                    console.log(payloadJson)
+        
+                    // get public key info
+                    // try {
+                    //     let keyAddress = keyHash + leafHash(authorKey, 64)
+                    //     let keyState = await this.sawtoothClient.get(`/state/${keyAddress}`)
+                    //     let keyStatePayload = keyState.data.data
+            
+                    //     let decodedKeyStatePayload = Buffer.from(keyStatePayload, 'base64')
+                    //     let keyStatePayloadJson = cbor.decode(decodedKeyStatePayload)
+            
+                    //     console.log(keyStatePayloadJson)
+            
+                    //     packet.transactions.push({
+                    //         'authorKey': authorKey,
+                    //         'authorName': keyStatePayloadJson[`${authorKey}`],
+                    //         'transaction': payloadJson
+                    //     })
+                    // } catch (err) {
+                    //     console.log(err)
+                    // }
+                }
+            }
+
+            let packetString = JSON.stringify(packet)
+
+            console.log(`Sending packet to client:`)
+            console.log(packetString)
+    
+            this.mqttClient.publish(`/topic/${this.userPubKey}/response/getContract`, packetString)
 
         } catch (err) {
             console.log(err)
