@@ -141,23 +141,24 @@ class Retriever {
     async getContracts() {
 
         try {
-            let contracts = await this.sawtoothClient.get('/transactions')
-            console.log(`Contracts received from REST API ${this.restApiPort}`)
+            let transactions = await this.sawtoothClient.get('/transactions')
+            console.log(`Transactions received from REST API ${this.restApiPort}`)
     
             let packet = {
                 'serialNum': this.serialNum,
                 'contracts': []
             }
 
-            for (let i = 0; i < contracts.data.data.length; i++) {
-                if (contracts.data.data[i].header.inputs[0] == contractHash + leafHash(this.serialNum, 64)) {
+            for (let i = 0; i < transactions.data.data.length; i++) {
+                if (transactions.data.data[i].header.inputs[0] == contractHash + leafHash(this.serialNum, 64)) {
         
                     // let authorKey = contracts.data.data[i].header.signer_public_key
-                    let payload = contracts.data.data[i].payload
+                    let payload = transactions.data.data[i].payload
                     let decodedPayload = Buffer.from(payload, 'base64')
                     let payloadJson = cbor.decode(decodedPayload)
         
                     console.log(payloadJson)
+                    packet.contracts.push(payloadJson)
         
                     // get public key info
                     // try {

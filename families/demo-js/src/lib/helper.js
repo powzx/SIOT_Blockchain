@@ -46,6 +46,22 @@ const applySet = (context, address, name, value) => (possibleAddressValues) => {
     return setEntry(context, address, stateValue);
 }
 
+const updateEntry = (context, address, name, value) => (possibleAddressValues) => {
+    let stateValueRep = possibleAddressValues[address]
+
+    if (!stateValueRep || stateValueRep.length === 0) {
+        return applySet(context, address, name, value)
+    }
+    let stateValue = cbor.decodeFirstSync(stateValueRep)
+    if (stateValue[name] === null || stateValue[name] === undefined) {
+        return applySet(context, address, name, value)
+    }
+
+    stateValue[name] = value
+
+    return setEntry(context, address, stateValue)
+}
+
 const updateSet = (context, address, name, value) => (possibleAddressValues) => {
     let stateValueRep = possibleAddressValues[address]
     console.log(stateValueRep);
@@ -76,5 +92,6 @@ module.exports = {
     toInternalError,
     setEntry,
     applySet,
-    updateSet
+    updateSet,
+    updateEntry
 }
