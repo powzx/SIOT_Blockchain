@@ -47,9 +47,9 @@ const supplyHash = leafHash('supply', 6)
 const keyHash = leafHash('key', 6)
 
 class Retriever {
-    constructor(serialNum, userPubKey) {
+    constructor(serialNum, uuid) {
         this.serialNum = serialNum
-        this.userPubKey = userPubKey
+        this.uuid = uuid
 
         this.mqttClient = mqtt.connect(`${uri}`, options)
 
@@ -113,7 +113,7 @@ class Retriever {
             console.log(`Sending packet to client:`)
             console.log(packetString)
     
-            this.mqttClient.publish(`/topic/${this.userPubKey}/response/get`, packetString)
+            this.mqttClient.publish(`/topic/users/${this.uuid}`, packetString)
 
         } catch (err) {
             console.log(err)

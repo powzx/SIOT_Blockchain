@@ -149,13 +149,10 @@ class Packager {
                 statusText: txnRes.statusText
             })
             
-            // if (this.family == 'supply') {
-            //     this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))
-            //     console.log(`Broadcasting updates on key ${this.payload['key']}`)
-            // }
-
-            this.mqttClient.publish(`/topic/${this.payload['key']}/response/post`, JSON.stringify(this.payload))
-            console.log(`Broadcasting updates on key ${this.payload['key']}`)
+            if (this.family == 'supply') {
+                this.mqttClient.publish(`/topic/updates/${this.payload['key']}`, JSON.stringify(this.payload))
+                console.log(`Broadcasting updates on key ${this.payload['key']}`)
+            }
 
             return txnRes
         } catch (err) {
