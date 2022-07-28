@@ -28,7 +28,8 @@ npm install
 ```
 7. Navigate to the servers/demo-server directory.
 8. Create a folder named mqtt and input your certificate authority, client certificate, and client private key as ca.crt, client.crt, and client.key respectively.
-9. Ensure your Mosquitto broker is running, and run:
+9. Open env.js and change the 'ip' field to the IP address of your computer.
+10. Ensure your Mosquitto broker is running, and run:
 ```
 node index.js
 ```
@@ -70,7 +71,7 @@ cat ~/.sawtooth/keys/root.pub
 ```
 sawset proposal create --key /pbft-shared/validators/validator-0.priv sawtooth.identity.allowed_keys=$(cat ~/.sawtooth/keys/root.pub) --url http://rest-api-0:8008
 ```
-1. d. Create a new policy using the Sawtooth Identity Transaction Family. Replace the POLICY_NAME as desired, and ROOT_USER_PUBLIC_KEY as the key you noted down from Step 2a. FIRST_KEY and SECOND_KEY are other public keys of the ESP32 that you wish to allow to submit transactions to the Sawtooth network. You may add more of such keys by adding more PERMIT_KEY rules separated by a whitespace.
+1. d. Create a new policy using the Sawtooth Identity Transaction Family. Replace the POLICY_NAME as desired, and ROOT_USER_PUBLIC_KEY as the key you noted down from Step 1a. FIRST_KEY and SECOND_KEY are other public keys of the ESP32 that you wish to allow to submit transactions to the Sawtooth network. You may add more of such keys by adding more PERMIT_KEY rules separated by a whitespace.
 ```
 sawtooth identity policy create POLICY_NAME "PERMIT_KEY ROOT_USER_PUBLIC_KEY" "PERMIT_KEY FIRST_KEY" "PERMIT_KEY SECOND_KEY" --url http://rest-api-0:8008
 ```
