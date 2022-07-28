@@ -51,7 +51,36 @@ sawtooth state list --url http://rest-api-0:8008
 ```
 
 ## Integration
+Please ensure you have properly set up and tested the Sawtooth network as shown above.
 
+Step 1 is to be done only once, unless the Docker volumes associated with the application have been removed. You may skip this step if you have already done it previously.
+
+1. a. While the Sawtooth network is running, open a new terminal and run:
+```
+docker exec -it sawtooth-shell-default bash
+```
+
+1. b. Print your root user public key and note it down somewhere:
+```
+cat ~/.sawtooth/keys/root.pub
+```
+1. c. Add your root user public key to the list of allowed keys that are allowed to change the Sawtooth settings using the Sawtooth Settings Transaction Family.
+```
+sawset proposal create --key /pbft-shared/validators/validator-0.priv sawtooth.identity.allowed_keys=$(cat ~/.sawtooth/keys/root.pub) --url http://rest-api-0:8008
+```
+1. d. Create a new policy using the Sawtooth Identity Transaction Family. Replace the POLICY_NAME as desired, and ROOT_USER_PUBLIC_KEY as the key you noted down from Step 2a. FIRST_KEY and SECOND_KEY are other public keys of the ESP32 that you wish to allow to submit transactions to the Sawtooth network. You may add more of such keys by adding more PERMIT_KEY rules separated by a whitespace.
+```
+sawtooth identity policy create POLICY_NAME "PERMIT_KEY ROOT_USER_PUBLIC_KEY" "PERMIT_KEY FIRST_KEY" "PERMIT_KEY SECOND_KEY" --url http://rest-api-0:8008
+```
+
+1. e. Create a transactor role for the policy you made. The Sawtooth network now only allows the specified keys to submit transactions, while denying all other keys.
+```
+sawtooth identity role create transactor POLICY_NAME --url http://rest-api-0:8008
+```
+
+2. Ensure the Flutter application and ESP32 are up and running.
+3. Observe the Node server for the transactions submitted by the running ESP32 devices, they should submit data to the network every 30 seconds.
+4. Observe the ledger data using the Flutter application. 
 
 ## Shutting down
 1. Shut down the Node server using Ctrl-C.
