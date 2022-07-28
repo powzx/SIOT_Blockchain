@@ -9,6 +9,8 @@ The guide assumes that you are equipped with some knowledge about Hyperledger Sa
 3. Node 12
 4. NPM 6
 5. Mosquitto Broker with SSL
+6. [BlockSupply Flutter Application](https://github.com/powzx/BlockSupply_Flutter)
+7. [BlockSupply ESP32](https://github.com/powzx/ESP32_Crypto_BlockSupply)
 
 ## Setting up and getting started
 1. Fork the repository and clone into your computer.
