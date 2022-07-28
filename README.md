@@ -61,3 +61,4 @@ docker-compose -f docker-compose-n1.yaml down
 ```
 
 ## Useful Links
+[Hyperledger Sawtooth Documentation](https://sawtooth.hyperledger.org/docs/1.2/)
