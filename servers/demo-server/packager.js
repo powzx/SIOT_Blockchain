@@ -3,8 +3,9 @@ const { SawtoothClientFactory } = require('./sawtooth-client')
 
 const fs = require("fs")
 const path = require("path")
+const env = require("./env")
 
-const uri = 'mqtts://192.168.11.109:8883'
+const uri = `mqtts://${env.ip}:8883`
 
 var caFile = fs.readFileSync(path.join(__dirname, "mqtt", "ca.crt"))
 var certFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.crt"))

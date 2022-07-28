@@ -5,8 +5,9 @@ const path = require("path")
 
 const { Packager } = require('./packager')
 const { Retriever } = require('./retriever')
+const env = require('./env')
 
-const uri = 'mqtts://192.168.11.109:8883'
+const uri = `mqtts://${env.ip}:8883`
 
 var caFile = fs.readFileSync(path.join(__dirname, "mqtt", "ca.crt"))
 var certFile = fs.readFileSync(path.join(__dirname, "mqtt", "client.crt"))
@@ -25,7 +26,7 @@ const server = mqtt.connect(`${uri}`, options)
 server.on('connect', function() {
   server.subscribe('/topic/dispatch/+')
 
-  console.log('Server is successfully connected to the MQTT broker')
+  console.log(`Server is successfully connected to the MQTT broker at ${uri}`)
 })
 
 server.on('message', async function(topic, message) {
