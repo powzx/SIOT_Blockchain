@@ -1,6 +1,8 @@
 ## Introduction
 This guide will bring you through the setting up and testing of the BlockSupply application. The application is tested well on the Ubuntu 18.04 LTS environment.
 
+The guide assumes that you are equipped with some knowledge about Hyperledger Sawtooth, Flutter, and ESP32 microcontrollers.
+
 ## Prerequisites
 1. Latest version of Docker
 2. Latest version of Docker Compose
@@ -91,3 +93,5 @@ docker-compose -f docker-compose-n1.yaml down
 
 ## Useful Links
 [Hyperledger Sawtooth Documentation](https://sawtooth.hyperledger.org/docs/1.2/)
+
+[Application Demonstration and Architecture Guide](https://drive.google.com/file/d/1jjuukO2J0mZ3EghYU9oG2JH9eIUyjRkt/view?usp=sharing)
