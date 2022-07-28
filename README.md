@@ -27,7 +27,7 @@ docker-compose -f docker-compose-n1.yaml up
 npm install
 ```
 7. Navigate to the servers/demo-server directory.
-8. Create a folder named mqtt and input your certificate authority, client certificate, and client private key as ca.crt, client.crt, and client.key respectively.
+8. Create a folder named mqtt and input your MQTT broker certificate authority, client certificate, and client private key as ca.crt, client.crt, and client.key respectively.
 9. Open env.js and change the 'ip' field to the IP address of your computer.
 10. Ensure your Mosquitto broker is running, and run:
 ```
