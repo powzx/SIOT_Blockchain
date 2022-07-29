@@ -78,6 +78,15 @@ sawset proposal create --key /pbft-shared/validators/validator-0.priv sawtooth.i
 sawtooth identity policy create POLICY_NAME "PERMIT_KEY ROOT_USER_PUBLIC_KEY" "PERMIT_KEY FIRST_KEY" "PERMIT_KEY SECOND_KEY" --url http://rest-api-0:8008
 ```
 
+The following is an example of the usage of the command:
+```
+root@07194eaa1d23:/# sawtooth identity policy create test_policy "PERMIT_KEY 03ccb1e73b8602c8e89288eaf5470c0b37ccab2f96654c0b7c61e1d67fccc99fc1" "PERMIT_KEY 03b84ef14ce69cb00f50e51d2f99405747befd84d54d666735f5c677df3b932e3b" --url http://rest-api-0:8008
+
+Policy committed in 2.0467 sec
+```
+
+The 66-character hexadecimal representation of the public key can be found from the [ESP32](https://github.com/powzx/ESP32_Crypto_BlockSupply/#key-generation).
+
 1. e. Create a transactor role for the policy you made. The Sawtooth network now only allows the specified keys to submit transactions, while denying all other keys.
 ```
 sawtooth identity role create transactor POLICY_NAME --url http://rest-api-0:8008
